@@ -1,0 +1,52 @@
+[
+  {
+    "name": "LOCAL_MUT_001",
+    "expression": "Ref($close, 10)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_002",
+    "expression": "($close-Ref($close, 30))/Ref($close, 30)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_003",
+    "expression": "($open-Ref($close, 3))/Ref($close, 3)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_004",
+    "expression": "($high-$low)/(Ref($close, 13)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_005",
+    "expression": "Slope($close, 2)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_006",
+    "expression": "Slope($vwap, 40)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_007",
+    "expression": "Rsquare($close, 2)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_008",
+    "expression": "Resi($close, 5)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_009",
+    "expression": "Mean($close, 20)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_010",
+    "expression": "Std($close, 5)/$close",
+    "reason": "local_fallback_mutation"
+  }
+]

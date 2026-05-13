@@ -1,0 +1,170 @@
+[
+  {
+    "name": "US_LLM_R1_001",
+    "category": "llm_base",
+    "expression": "Mean($close, 8)/$close",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 5.697152930766886,
+      "ic_mean": 0.04278031119971057,
+      "sharpe": 0.5635155868016178,
+      "annual_return": 1.8824819663771653,
+      "max_drawdown": -0.6127668860869071
+    }
+  },
+  {
+    "name": "US_LLM_R1_002",
+    "category": "llm_base",
+    "expression": "Mean($close, 40)/$close",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 2.982965221933026,
+      "ic_mean": 0.020534650955856083,
+      "sharpe": 0.5188071072302961,
+      "annual_return": 1.3382234708715517,
+      "max_drawdown": -0.4965478338617869
+    }
+  },
+  {
+    "name": "US_LLM_R1_003",
+    "category": "llm_base",
+    "expression": "Slope($vwap, 60)/$close",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 1.0963742928743476,
+      "ic_mean": 0.006179437405753098,
+      "sharpe": 0.35484180418397576,
+      "annual_return": 0.09572185527504162,
+      "max_drawdown": -0.8730905775312738
+    }
+  },
+  {
+    "name": "US_LLM_R1_004",
+    "category": "llm_base",
+    "expression": "Rsquare($close, 13)",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 1.0718463940530685,
+      "ic_mean": 0.00591477437105178,
+      "sharpe": 0.36207346952685493,
+      "annual_return": 0.06969887966884336,
+      "max_drawdown": -0.6235303244798125
+    }
+  },
+  {
+    "name": "US_LLM_R1_005",
+    "category": "llm_base",
+    "expression": "Slope($vwap, 40)/$close",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 0.3851722181447616,
+      "ic_mean": 0.00024171449096515232,
+      "sharpe": 0.35616647922894334,
+      "annual_return": 0.08813546357516033,
+      "max_drawdown": -0.8437767301268947
+    }
+  },
+  {
+    "name": "US_LLM_R1_006",
+    "category": "llm_base",
+    "expression": "(Std($close, 5)-Std($close, 8))/$close",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 0.25449785367460614,
+      "ic_mean": -0.000828976001090637,
+      "sharpe": 0.3539749738054826,
+      "annual_return": 0.12741342910475417,
+      "max_drawdown": -0.7883200864282863
+    }
+  },
+  {
+    "name": "US_LLM_R1_007",
+    "category": "llm_base",
+    "expression": "($open-Ref($close, 20))/Ref($close, 20)",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 0.17837541484388691,
+      "ic_mean": 0.004814119207314788,
+      "sharpe": -0.3993188900338877,
+      "annual_return": NaN,
+      "max_drawdown": -10.783393949813242
+    }
+  },
+  {
+    "name": "US_LLM_R1_008",
+    "category": "llm_base",
+    "expression": "Rsquare($close, 2)",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": 0.0,
+      "ic_mean": NaN,
+      "sharpe": NaN,
+      "annual_return": 0.0,
+      "max_drawdown": 0.0
+    }
+  },
+  {
+    "name": "US_LLM_R1_009",
+    "category": "llm_base",
+    "expression": "(Mean($close, 40)-Mean($close, 30))/$close",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": -0.2432814526784393,
+      "ic_mean": 0.0008805784899024703,
+      "sharpe": -0.34895087146673576,
+      "annual_return": NaN,
+      "max_drawdown": -17.673535962529918
+    }
+  },
+  {
+    "name": "US_LLM_R1_010",
+    "category": "llm_base",
+    "expression": "(Mean($volume, 8)-Mean($volume, 40))/(Mean($volume, 40)+1e-12)",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": -0.39072398237505646,
+      "ic_mean": -0.0064019302846053,
+      "sharpe": 0.3775076517775796,
+      "annual_return": 0.21573722036953136,
+      "max_drawdown": -0.8330371632246332
+    }
+  },
+  {
+    "name": "US_LLM_R1_011",
+    "category": "llm_base",
+    "expression": "($open-Ref($close, 3))/Ref($close, 3)",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": -0.4144098357065004,
+      "ic_mean": 1.2702120808459405e-05,
+      "sharpe": -0.41593409020351557,
+      "annual_return": NaN,
+      "max_drawdown": -11.948086516961
+    }
+  },
+  {
+    "name": "US_LLM_R1_012",
+    "category": "llm_base",
+    "expression": "($open-Ref($close, 60))/Ref($close, 60)",
+    "source": "local_fallback",
+    "reason": "local_fallback_mutation",
+    "metrics": {
+      "score": -0.4252039328517407,
+      "ic_mean": 0.00018906158647395086,
+      "sharpe": -0.4478913232286148,
+      "annual_return": NaN,
+      "max_drawdown": -11.208729230443767
+    }
+  }
+]

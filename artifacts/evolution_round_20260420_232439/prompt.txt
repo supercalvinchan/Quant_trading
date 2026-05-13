@@ -1,0 +1,125 @@
+你是量化研究员，生成美股日频因子表达式（base 风格），目标是可计算、低冗余。
+
+仅允许字段：$open, $high, $low, $close, $vwap, $volume
+仅允许函数：Ref, Mean, Std, Slope, Rsquare, Resi, Max, Min, Quantile, Greater, Less
+允许运算符：+ - * / ()
+禁止使用任何其他函数、模块、变量。
+
+历史反馈：
+无历史反馈，本轮先追求多样性与可计算性。
+
+已有因子表达式（避免重复）：
+- Ref($close, 29)/$close
+- Ref($close, 28)/$close
+- Ref($close, 27)/$close
+- Ref($close, 26)/$close
+- Ref($close, 25)/$close
+- Ref($close, 24)/$close
+- Ref($close, 23)/$close
+- Ref($close, 22)/$close
+- Ref($close, 21)/$close
+- Ref($close, 20)/$close
+- Ref($close, 19)/$close
+- Ref($close, 18)/$close
+- Ref($close, 17)/$close
+- Ref($close, 16)/$close
+- Ref($close, 15)/$close
+- Ref($close, 14)/$close
+- Ref($close, 13)/$close
+- Ref($close, 12)/$close
+- Ref($close, 11)/$close
+- Ref($close, 10)/$close
+- Ref($close, 9)/$close
+- Ref($close, 8)/$close
+- Ref($close, 7)/$close
+- Ref($close, 6)/$close
+- Ref($close, 5)/$close
+- Ref($close, 4)/$close
+- Ref($close, 3)/$close
+- Ref($close, 2)/$close
+- Ref($close, 1)/$close
+- $close/$close
+- Ref($open, 29)/$close
+- Ref($open, 28)/$close
+- Ref($open, 27)/$close
+- Ref($open, 26)/$close
+- Ref($open, 25)/$close
+- Ref($open, 24)/$close
+- Ref($open, 23)/$close
+- Ref($open, 22)/$close
+- Ref($open, 21)/$close
+- Ref($open, 20)/$close
+- Ref($open, 19)/$close
+- Ref($open, 18)/$close
+- Ref($open, 17)/$close
+- Ref($open, 16)/$close
+- Ref($open, 15)/$close
+- Ref($open, 14)/$close
+- Ref($open, 13)/$close
+- Ref($open, 12)/$close
+- Ref($open, 11)/$close
+- Ref($open, 10)/$close
+- Ref($open, 9)/$close
+- Ref($open, 8)/$close
+- Ref($open, 7)/$close
+- Ref($open, 6)/$close
+- Ref($open, 5)/$close
+- Ref($open, 4)/$close
+- Ref($open, 3)/$close
+- Ref($open, 2)/$close
+- Ref($open, 1)/$close
+- $open/$close
+- Ref($high, 29)/$close
+- Ref($high, 28)/$close
+- Ref($high, 27)/$close
+- Ref($high, 26)/$close
+- Ref($high, 25)/$close
+- Ref($high, 24)/$close
+- Ref($high, 23)/$close
+- Ref($high, 22)/$close
+- Ref($high, 21)/$close
+- Ref($high, 20)/$close
+- Ref($high, 19)/$close
+- Ref($high, 18)/$close
+- Ref($high, 17)/$close
+- Ref($high, 16)/$close
+- Ref($high, 15)/$close
+- Ref($high, 14)/$close
+- Ref($high, 13)/$close
+- Ref($high, 12)/$close
+- Ref($high, 11)/$close
+- Ref($high, 10)/$close
+
+参考表达式风格：
+- Ref($close, 29)/$close
+- Ref($close, 28)/$close
+- Ref($close, 27)/$close
+- Ref($close, 26)/$close
+- Ref($close, 25)/$close
+- Ref($close, 24)/$close
+- Ref($close, 23)/$close
+- Ref($close, 22)/$close
+- Ref($close, 21)/$close
+- Ref($close, 20)/$close
+- Ref($close, 19)/$close
+- Ref($close, 18)/$close
+- Ref($close, 17)/$close
+- Ref($close, 16)/$close
+- Ref($close, 15)/$close
+- Ref($close, 14)/$close
+- Ref($close, 13)/$close
+- Ref($close, 12)/$close
+- Ref($close, 11)/$close
+- Ref($close, 10)/$close
+- Ref($close, 9)/$close
+- Ref($close, 8)/$close
+- Ref($close, 7)/$close
+- Ref($close, 6)/$close
+
+请输出 10 个候选，严格输出 JSON，不要加解释文字。
+JSON schema:
+{
+  "hypotheses": [
+    {"name": "简短英文名", "expression": "表达式", "reason": "一句话"}
+  ]
+}
