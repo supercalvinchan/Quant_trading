@@ -1,0 +1,362 @@
+[
+  {
+    "name": "LOCAL_MUT_001",
+    "expression": "Ref($close, 10)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_002",
+    "expression": "($close-Ref($close, 30))/Ref($close, 30)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_003",
+    "expression": "($open-Ref($close, 3))/Ref($close, 3)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_004",
+    "expression": "($high-$low)/(Ref($close, 13)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_005",
+    "expression": "Slope($close, 2)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_006",
+    "expression": "Slope($vwap, 40)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_007",
+    "expression": "Rsquare($close, 2)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_008",
+    "expression": "Resi($close, 5)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_009",
+    "expression": "Mean($close, 20)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_010",
+    "expression": "Std($close, 5)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_011",
+    "expression": "(Quantile($close, 8, 0.8)-Quantile($close, 8, 0.2))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_012",
+    "expression": "(Mean($close, 10)-Mean($close, 20))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_013",
+    "expression": "(Std($close, 60)-Std($close, 30))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_014",
+    "expression": "(Mean($volume, 8)-Mean($volume, 40))/(Mean($volume, 40)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_015",
+    "expression": "(Greater($open,$close)-Less($open,$close))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_016",
+    "expression": "Ref($close, 3)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_017",
+    "expression": "($close-Ref($close, 5))/Ref($close, 5)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_018",
+    "expression": "($open-Ref($close, 10))/Ref($close, 10)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_019",
+    "expression": "($high-$low)/(Ref($close, 3)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_020",
+    "expression": "Slope($close, 13)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_021",
+    "expression": "Slope($vwap, 2)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_022",
+    "expression": "Rsquare($close, 2)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_023",
+    "expression": "Resi($close, 8)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_024",
+    "expression": "Mean($close, 60)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_025",
+    "expression": "Std($close, 5)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_026",
+    "expression": "(Quantile($close, 20, 0.8)-Quantile($close, 20, 0.2))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_027",
+    "expression": "(Mean($close, 2)-Mean($close, 10))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_028",
+    "expression": "(Std($close, 10)-Std($close, 13))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_029",
+    "expression": "(Mean($volume, 5)-Mean($volume, 8))/(Mean($volume, 8)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_030",
+    "expression": "(Greater($open,$close)-Less($open,$close))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_031",
+    "expression": "Ref($close, 2)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_032",
+    "expression": "($close-Ref($close, 40))/Ref($close, 40)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_033",
+    "expression": "($open-Ref($close, 40))/Ref($close, 40)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_034",
+    "expression": "($high-$low)/(Ref($close, 30)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_035",
+    "expression": "Slope($close, 10)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_036",
+    "expression": "Slope($vwap, 60)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_037",
+    "expression": "Rsquare($close, 60)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_038",
+    "expression": "Resi($close, 8)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_039",
+    "expression": "Mean($close, 40)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_040",
+    "expression": "Std($close, 10)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_041",
+    "expression": "(Quantile($close, 8, 0.8)-Quantile($close, 8, 0.2))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_042",
+    "expression": "(Mean($close, 30)-Mean($close, 20))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_043",
+    "expression": "(Std($close, 40)-Std($close, 2))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_044",
+    "expression": "(Mean($volume, 40)-Mean($volume, 30))/(Mean($volume, 30)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_045",
+    "expression": "(Greater($open,$close)-Less($open,$close))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_046",
+    "expression": "Ref($close, 8)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_047",
+    "expression": "($close-Ref($close, 30))/Ref($close, 30)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_048",
+    "expression": "($open-Ref($close, 60))/Ref($close, 60)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_049",
+    "expression": "($high-$low)/(Ref($close, 60)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_050",
+    "expression": "Slope($close, 10)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_051",
+    "expression": "Slope($vwap, 40)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_052",
+    "expression": "Rsquare($close, 13)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_053",
+    "expression": "Resi($close, 13)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_054",
+    "expression": "Mean($close, 8)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_055",
+    "expression": "Std($close, 13)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_056",
+    "expression": "(Quantile($close, 10, 0.8)-Quantile($close, 10, 0.2))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_057",
+    "expression": "(Mean($close, 40)-Mean($close, 30))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_058",
+    "expression": "(Std($close, 5)-Std($close, 8))/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_059",
+    "expression": "(Mean($volume, 3)-Mean($volume, 60))/(Mean($volume, 60)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_060",
+    "expression": "(Greater($open,$close)-Less($open,$close))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_061",
+    "expression": "Ref($close, 20)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_062",
+    "expression": "($close-Ref($close, 20))/Ref($close, 20)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_063",
+    "expression": "($open-Ref($close, 20))/Ref($close, 20)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_064",
+    "expression": "($high-$low)/(Ref($close, 20)+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_065",
+    "expression": "Slope($close, 30)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_066",
+    "expression": "Slope($vwap, 13)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_067",
+    "expression": "Rsquare($close, 30)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_068",
+    "expression": "Resi($close, 5)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_069",
+    "expression": "Mean($close, 10)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_070",
+    "expression": "Std($close, 3)/$close",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_071",
+    "expression": "(Quantile($close, 3, 0.8)-Quantile($close, 3, 0.2))/($close+1e-12)",
+    "reason": "local_fallback_mutation"
+  },
+  {
+    "name": "LOCAL_MUT_072",
+    "expression": "(Mean($close, 60)-Mean($close, 30))/$close",
+    "reason": "local_fallback_mutation"
+  }
+]

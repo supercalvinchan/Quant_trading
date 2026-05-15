@@ -1,0 +1,2637 @@
+{
+  "description": "Local self-contained registry of the 526 factor definitions used by USalpha.",
+  "source_snapshot": "local_snapshot_from_audited_alpha526_registry",
+  "factor_count": 526,
+  "factors": [
+    {
+      "name": "CLOSE29",
+      "category": "base",
+      "expression": "Ref($close, 29)/$close"
+    },
+    {
+      "name": "CLOSE28",
+      "category": "base",
+      "expression": "Ref($close, 28)/$close"
+    },
+    {
+      "name": "CLOSE27",
+      "category": "base",
+      "expression": "Ref($close, 27)/$close"
+    },
+    {
+      "name": "CLOSE26",
+      "category": "base",
+      "expression": "Ref($close, 26)/$close"
+    },
+    {
+      "name": "CLOSE25",
+      "category": "base",
+      "expression": "Ref($close, 25)/$close"
+    },
+    {
+      "name": "CLOSE24",
+      "category": "base",
+      "expression": "Ref($close, 24)/$close"
+    },
+    {
+      "name": "CLOSE23",
+      "category": "base",
+      "expression": "Ref($close, 23)/$close"
+    },
+    {
+      "name": "CLOSE22",
+      "category": "base",
+      "expression": "Ref($close, 22)/$close"
+    },
+    {
+      "name": "CLOSE21",
+      "category": "base",
+      "expression": "Ref($close, 21)/$close"
+    },
+    {
+      "name": "CLOSE20",
+      "category": "base",
+      "expression": "Ref($close, 20)/$close"
+    },
+    {
+      "name": "CLOSE19",
+      "category": "base",
+      "expression": "Ref($close, 19)/$close"
+    },
+    {
+      "name": "CLOSE18",
+      "category": "base",
+      "expression": "Ref($close, 18)/$close"
+    },
+    {
+      "name": "CLOSE17",
+      "category": "base",
+      "expression": "Ref($close, 17)/$close"
+    },
+    {
+      "name": "CLOSE16",
+      "category": "base",
+      "expression": "Ref($close, 16)/$close"
+    },
+    {
+      "name": "CLOSE15",
+      "category": "base",
+      "expression": "Ref($close, 15)/$close"
+    },
+    {
+      "name": "CLOSE14",
+      "category": "base",
+      "expression": "Ref($close, 14)/$close"
+    },
+    {
+      "name": "CLOSE13",
+      "category": "base",
+      "expression": "Ref($close, 13)/$close"
+    },
+    {
+      "name": "CLOSE12",
+      "category": "base",
+      "expression": "Ref($close, 12)/$close"
+    },
+    {
+      "name": "CLOSE11",
+      "category": "base",
+      "expression": "Ref($close, 11)/$close"
+    },
+    {
+      "name": "CLOSE10",
+      "category": "base",
+      "expression": "Ref($close, 10)/$close"
+    },
+    {
+      "name": "CLOSE9",
+      "category": "base",
+      "expression": "Ref($close, 9)/$close"
+    },
+    {
+      "name": "CLOSE8",
+      "category": "base",
+      "expression": "Ref($close, 8)/$close"
+    },
+    {
+      "name": "CLOSE7",
+      "category": "base",
+      "expression": "Ref($close, 7)/$close"
+    },
+    {
+      "name": "CLOSE6",
+      "category": "base",
+      "expression": "Ref($close, 6)/$close"
+    },
+    {
+      "name": "CLOSE5",
+      "category": "base",
+      "expression": "Ref($close, 5)/$close"
+    },
+    {
+      "name": "CLOSE4",
+      "category": "base",
+      "expression": "Ref($close, 4)/$close"
+    },
+    {
+      "name": "CLOSE3",
+      "category": "base",
+      "expression": "Ref($close, 3)/$close"
+    },
+    {
+      "name": "CLOSE2",
+      "category": "base",
+      "expression": "Ref($close, 2)/$close"
+    },
+    {
+      "name": "CLOSE1",
+      "category": "base",
+      "expression": "Ref($close, 1)/$close"
+    },
+    {
+      "name": "CLOSE0",
+      "category": "base",
+      "expression": "$close/$close"
+    },
+    {
+      "name": "OPEN29",
+      "category": "base",
+      "expression": "Ref($open, 29)/$close"
+    },
+    {
+      "name": "OPEN28",
+      "category": "base",
+      "expression": "Ref($open, 28)/$close"
+    },
+    {
+      "name": "OPEN27",
+      "category": "base",
+      "expression": "Ref($open, 27)/$close"
+    },
+    {
+      "name": "OPEN26",
+      "category": "base",
+      "expression": "Ref($open, 26)/$close"
+    },
+    {
+      "name": "OPEN25",
+      "category": "base",
+      "expression": "Ref($open, 25)/$close"
+    },
+    {
+      "name": "OPEN24",
+      "category": "base",
+      "expression": "Ref($open, 24)/$close"
+    },
+    {
+      "name": "OPEN23",
+      "category": "base",
+      "expression": "Ref($open, 23)/$close"
+    },
+    {
+      "name": "OPEN22",
+      "category": "base",
+      "expression": "Ref($open, 22)/$close"
+    },
+    {
+      "name": "OPEN21",
+      "category": "base",
+      "expression": "Ref($open, 21)/$close"
+    },
+    {
+      "name": "OPEN20",
+      "category": "base",
+      "expression": "Ref($open, 20)/$close"
+    },
+    {
+      "name": "OPEN19",
+      "category": "base",
+      "expression": "Ref($open, 19)/$close"
+    },
+    {
+      "name": "OPEN18",
+      "category": "base",
+      "expression": "Ref($open, 18)/$close"
+    },
+    {
+      "name": "OPEN17",
+      "category": "base",
+      "expression": "Ref($open, 17)/$close"
+    },
+    {
+      "name": "OPEN16",
+      "category": "base",
+      "expression": "Ref($open, 16)/$close"
+    },
+    {
+      "name": "OPEN15",
+      "category": "base",
+      "expression": "Ref($open, 15)/$close"
+    },
+    {
+      "name": "OPEN14",
+      "category": "base",
+      "expression": "Ref($open, 14)/$close"
+    },
+    {
+      "name": "OPEN13",
+      "category": "base",
+      "expression": "Ref($open, 13)/$close"
+    },
+    {
+      "name": "OPEN12",
+      "category": "base",
+      "expression": "Ref($open, 12)/$close"
+    },
+    {
+      "name": "OPEN11",
+      "category": "base",
+      "expression": "Ref($open, 11)/$close"
+    },
+    {
+      "name": "OPEN10",
+      "category": "base",
+      "expression": "Ref($open, 10)/$close"
+    },
+    {
+      "name": "OPEN9",
+      "category": "base",
+      "expression": "Ref($open, 9)/$close"
+    },
+    {
+      "name": "OPEN8",
+      "category": "base",
+      "expression": "Ref($open, 8)/$close"
+    },
+    {
+      "name": "OPEN7",
+      "category": "base",
+      "expression": "Ref($open, 7)/$close"
+    },
+    {
+      "name": "OPEN6",
+      "category": "base",
+      "expression": "Ref($open, 6)/$close"
+    },
+    {
+      "name": "OPEN5",
+      "category": "base",
+      "expression": "Ref($open, 5)/$close"
+    },
+    {
+      "name": "OPEN4",
+      "category": "base",
+      "expression": "Ref($open, 4)/$close"
+    },
+    {
+      "name": "OPEN3",
+      "category": "base",
+      "expression": "Ref($open, 3)/$close"
+    },
+    {
+      "name": "OPEN2",
+      "category": "base",
+      "expression": "Ref($open, 2)/$close"
+    },
+    {
+      "name": "OPEN1",
+      "category": "base",
+      "expression": "Ref($open, 1)/$close"
+    },
+    {
+      "name": "OPEN0",
+      "category": "base",
+      "expression": "$open/$close"
+    },
+    {
+      "name": "HIGH29",
+      "category": "base",
+      "expression": "Ref($high, 29)/$close"
+    },
+    {
+      "name": "HIGH28",
+      "category": "base",
+      "expression": "Ref($high, 28)/$close"
+    },
+    {
+      "name": "HIGH27",
+      "category": "base",
+      "expression": "Ref($high, 27)/$close"
+    },
+    {
+      "name": "HIGH26",
+      "category": "base",
+      "expression": "Ref($high, 26)/$close"
+    },
+    {
+      "name": "HIGH25",
+      "category": "base",
+      "expression": "Ref($high, 25)/$close"
+    },
+    {
+      "name": "HIGH24",
+      "category": "base",
+      "expression": "Ref($high, 24)/$close"
+    },
+    {
+      "name": "HIGH23",
+      "category": "base",
+      "expression": "Ref($high, 23)/$close"
+    },
+    {
+      "name": "HIGH22",
+      "category": "base",
+      "expression": "Ref($high, 22)/$close"
+    },
+    {
+      "name": "HIGH21",
+      "category": "base",
+      "expression": "Ref($high, 21)/$close"
+    },
+    {
+      "name": "HIGH20",
+      "category": "base",
+      "expression": "Ref($high, 20)/$close"
+    },
+    {
+      "name": "HIGH19",
+      "category": "base",
+      "expression": "Ref($high, 19)/$close"
+    },
+    {
+      "name": "HIGH18",
+      "category": "base",
+      "expression": "Ref($high, 18)/$close"
+    },
+    {
+      "name": "HIGH17",
+      "category": "base",
+      "expression": "Ref($high, 17)/$close"
+    },
+    {
+      "name": "HIGH16",
+      "category": "base",
+      "expression": "Ref($high, 16)/$close"
+    },
+    {
+      "name": "HIGH15",
+      "category": "base",
+      "expression": "Ref($high, 15)/$close"
+    },
+    {
+      "name": "HIGH14",
+      "category": "base",
+      "expression": "Ref($high, 14)/$close"
+    },
+    {
+      "name": "HIGH13",
+      "category": "base",
+      "expression": "Ref($high, 13)/$close"
+    },
+    {
+      "name": "HIGH12",
+      "category": "base",
+      "expression": "Ref($high, 12)/$close"
+    },
+    {
+      "name": "HIGH11",
+      "category": "base",
+      "expression": "Ref($high, 11)/$close"
+    },
+    {
+      "name": "HIGH10",
+      "category": "base",
+      "expression": "Ref($high, 10)/$close"
+    },
+    {
+      "name": "HIGH9",
+      "category": "base",
+      "expression": "Ref($high, 9)/$close"
+    },
+    {
+      "name": "HIGH8",
+      "category": "base",
+      "expression": "Ref($high, 8)/$close"
+    },
+    {
+      "name": "HIGH7",
+      "category": "base",
+      "expression": "Ref($high, 7)/$close"
+    },
+    {
+      "name": "HIGH6",
+      "category": "base",
+      "expression": "Ref($high, 6)/$close"
+    },
+    {
+      "name": "HIGH5",
+      "category": "base",
+      "expression": "Ref($high, 5)/$close"
+    },
+    {
+      "name": "HIGH4",
+      "category": "base",
+      "expression": "Ref($high, 4)/$close"
+    },
+    {
+      "name": "HIGH3",
+      "category": "base",
+      "expression": "Ref($high, 3)/$close"
+    },
+    {
+      "name": "HIGH2",
+      "category": "base",
+      "expression": "Ref($high, 2)/$close"
+    },
+    {
+      "name": "HIGH1",
+      "category": "base",
+      "expression": "Ref($high, 1)/$close"
+    },
+    {
+      "name": "HIGH0",
+      "category": "base",
+      "expression": "$high/$close"
+    },
+    {
+      "name": "LOW29",
+      "category": "base",
+      "expression": "Ref($low, 29)/$close"
+    },
+    {
+      "name": "LOW28",
+      "category": "base",
+      "expression": "Ref($low, 28)/$close"
+    },
+    {
+      "name": "LOW27",
+      "category": "base",
+      "expression": "Ref($low, 27)/$close"
+    },
+    {
+      "name": "LOW26",
+      "category": "base",
+      "expression": "Ref($low, 26)/$close"
+    },
+    {
+      "name": "LOW25",
+      "category": "base",
+      "expression": "Ref($low, 25)/$close"
+    },
+    {
+      "name": "LOW24",
+      "category": "base",
+      "expression": "Ref($low, 24)/$close"
+    },
+    {
+      "name": "LOW23",
+      "category": "base",
+      "expression": "Ref($low, 23)/$close"
+    },
+    {
+      "name": "LOW22",
+      "category": "base",
+      "expression": "Ref($low, 22)/$close"
+    },
+    {
+      "name": "LOW21",
+      "category": "base",
+      "expression": "Ref($low, 21)/$close"
+    },
+    {
+      "name": "LOW20",
+      "category": "base",
+      "expression": "Ref($low, 20)/$close"
+    },
+    {
+      "name": "LOW19",
+      "category": "base",
+      "expression": "Ref($low, 19)/$close"
+    },
+    {
+      "name": "LOW18",
+      "category": "base",
+      "expression": "Ref($low, 18)/$close"
+    },
+    {
+      "name": "LOW17",
+      "category": "base",
+      "expression": "Ref($low, 17)/$close"
+    },
+    {
+      "name": "LOW16",
+      "category": "base",
+      "expression": "Ref($low, 16)/$close"
+    },
+    {
+      "name": "LOW15",
+      "category": "base",
+      "expression": "Ref($low, 15)/$close"
+    },
+    {
+      "name": "LOW14",
+      "category": "base",
+      "expression": "Ref($low, 14)/$close"
+    },
+    {
+      "name": "LOW13",
+      "category": "base",
+      "expression": "Ref($low, 13)/$close"
+    },
+    {
+      "name": "LOW12",
+      "category": "base",
+      "expression": "Ref($low, 12)/$close"
+    },
+    {
+      "name": "LOW11",
+      "category": "base",
+      "expression": "Ref($low, 11)/$close"
+    },
+    {
+      "name": "LOW10",
+      "category": "base",
+      "expression": "Ref($low, 10)/$close"
+    },
+    {
+      "name": "LOW9",
+      "category": "base",
+      "expression": "Ref($low, 9)/$close"
+    },
+    {
+      "name": "LOW8",
+      "category": "base",
+      "expression": "Ref($low, 8)/$close"
+    },
+    {
+      "name": "LOW7",
+      "category": "base",
+      "expression": "Ref($low, 7)/$close"
+    },
+    {
+      "name": "LOW6",
+      "category": "base",
+      "expression": "Ref($low, 6)/$close"
+    },
+    {
+      "name": "LOW5",
+      "category": "base",
+      "expression": "Ref($low, 5)/$close"
+    },
+    {
+      "name": "LOW4",
+      "category": "base",
+      "expression": "Ref($low, 4)/$close"
+    },
+    {
+      "name": "LOW3",
+      "category": "base",
+      "expression": "Ref($low, 3)/$close"
+    },
+    {
+      "name": "LOW2",
+      "category": "base",
+      "expression": "Ref($low, 2)/$close"
+    },
+    {
+      "name": "LOW1",
+      "category": "base",
+      "expression": "Ref($low, 1)/$close"
+    },
+    {
+      "name": "LOW0",
+      "category": "base",
+      "expression": "$low/$close"
+    },
+    {
+      "name": "VWAP29",
+      "category": "base",
+      "expression": "Ref($vwap, 29)/$close"
+    },
+    {
+      "name": "VWAP28",
+      "category": "base",
+      "expression": "Ref($vwap, 28)/$close"
+    },
+    {
+      "name": "VWAP27",
+      "category": "base",
+      "expression": "Ref($vwap, 27)/$close"
+    },
+    {
+      "name": "VWAP26",
+      "category": "base",
+      "expression": "Ref($vwap, 26)/$close"
+    },
+    {
+      "name": "VWAP25",
+      "category": "base",
+      "expression": "Ref($vwap, 25)/$close"
+    },
+    {
+      "name": "VWAP24",
+      "category": "base",
+      "expression": "Ref($vwap, 24)/$close"
+    },
+    {
+      "name": "VWAP23",
+      "category": "base",
+      "expression": "Ref($vwap, 23)/$close"
+    },
+    {
+      "name": "VWAP22",
+      "category": "base",
+      "expression": "Ref($vwap, 22)/$close"
+    },
+    {
+      "name": "VWAP21",
+      "category": "base",
+      "expression": "Ref($vwap, 21)/$close"
+    },
+    {
+      "name": "VWAP20",
+      "category": "base",
+      "expression": "Ref($vwap, 20)/$close"
+    },
+    {
+      "name": "VWAP19",
+      "category": "base",
+      "expression": "Ref($vwap, 19)/$close"
+    },
+    {
+      "name": "VWAP18",
+      "category": "base",
+      "expression": "Ref($vwap, 18)/$close"
+    },
+    {
+      "name": "VWAP17",
+      "category": "base",
+      "expression": "Ref($vwap, 17)/$close"
+    },
+    {
+      "name": "VWAP16",
+      "category": "base",
+      "expression": "Ref($vwap, 16)/$close"
+    },
+    {
+      "name": "VWAP15",
+      "category": "base",
+      "expression": "Ref($vwap, 15)/$close"
+    },
+    {
+      "name": "VWAP14",
+      "category": "base",
+      "expression": "Ref($vwap, 14)/$close"
+    },
+    {
+      "name": "VWAP13",
+      "category": "base",
+      "expression": "Ref($vwap, 13)/$close"
+    },
+    {
+      "name": "VWAP12",
+      "category": "base",
+      "expression": "Ref($vwap, 12)/$close"
+    },
+    {
+      "name": "VWAP11",
+      "category": "base",
+      "expression": "Ref($vwap, 11)/$close"
+    },
+    {
+      "name": "VWAP10",
+      "category": "base",
+      "expression": "Ref($vwap, 10)/$close"
+    },
+    {
+      "name": "VWAP9",
+      "category": "base",
+      "expression": "Ref($vwap, 9)/$close"
+    },
+    {
+      "name": "VWAP8",
+      "category": "base",
+      "expression": "Ref($vwap, 8)/$close"
+    },
+    {
+      "name": "VWAP7",
+      "category": "base",
+      "expression": "Ref($vwap, 7)/$close"
+    },
+    {
+      "name": "VWAP6",
+      "category": "base",
+      "expression": "Ref($vwap, 6)/$close"
+    },
+    {
+      "name": "VWAP5",
+      "category": "base",
+      "expression": "Ref($vwap, 5)/$close"
+    },
+    {
+      "name": "VWAP4",
+      "category": "base",
+      "expression": "Ref($vwap, 4)/$close"
+    },
+    {
+      "name": "VWAP3",
+      "category": "base",
+      "expression": "Ref($vwap, 3)/$close"
+    },
+    {
+      "name": "VWAP2",
+      "category": "base",
+      "expression": "Ref($vwap, 2)/$close"
+    },
+    {
+      "name": "VWAP1",
+      "category": "base",
+      "expression": "Ref($vwap, 1)/$close"
+    },
+    {
+      "name": "VWAP0",
+      "category": "base",
+      "expression": "$vwap/$close"
+    },
+    {
+      "name": "VOLUME29",
+      "category": "base",
+      "expression": "Ref($volume, 29)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME28",
+      "category": "base",
+      "expression": "Ref($volume, 28)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME27",
+      "category": "base",
+      "expression": "Ref($volume, 27)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME26",
+      "category": "base",
+      "expression": "Ref($volume, 26)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME25",
+      "category": "base",
+      "expression": "Ref($volume, 25)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME24",
+      "category": "base",
+      "expression": "Ref($volume, 24)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME23",
+      "category": "base",
+      "expression": "Ref($volume, 23)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME22",
+      "category": "base",
+      "expression": "Ref($volume, 22)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME21",
+      "category": "base",
+      "expression": "Ref($volume, 21)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME20",
+      "category": "base",
+      "expression": "Ref($volume, 20)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME19",
+      "category": "base",
+      "expression": "Ref($volume, 19)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME18",
+      "category": "base",
+      "expression": "Ref($volume, 18)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME17",
+      "category": "base",
+      "expression": "Ref($volume, 17)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME16",
+      "category": "base",
+      "expression": "Ref($volume, 16)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME15",
+      "category": "base",
+      "expression": "Ref($volume, 15)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME14",
+      "category": "base",
+      "expression": "Ref($volume, 14)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME13",
+      "category": "base",
+      "expression": "Ref($volume, 13)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME12",
+      "category": "base",
+      "expression": "Ref($volume, 12)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME11",
+      "category": "base",
+      "expression": "Ref($volume, 11)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME10",
+      "category": "base",
+      "expression": "Ref($volume, 10)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME9",
+      "category": "base",
+      "expression": "Ref($volume, 9)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME8",
+      "category": "base",
+      "expression": "Ref($volume, 8)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME7",
+      "category": "base",
+      "expression": "Ref($volume, 7)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME6",
+      "category": "base",
+      "expression": "Ref($volume, 6)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME5",
+      "category": "base",
+      "expression": "Ref($volume, 5)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME4",
+      "category": "base",
+      "expression": "Ref($volume, 4)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME3",
+      "category": "base",
+      "expression": "Ref($volume, 3)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME2",
+      "category": "base",
+      "expression": "Ref($volume, 2)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME1",
+      "category": "base",
+      "expression": "Ref($volume, 1)/($volume+1e-12)"
+    },
+    {
+      "name": "VOLUME0",
+      "category": "base",
+      "expression": "$volume/($volume+1e-12)"
+    },
+    {
+      "name": "KMID",
+      "category": "base",
+      "expression": "($close-$open)/$open"
+    },
+    {
+      "name": "KLEN",
+      "category": "base",
+      "expression": "($high-$low)/$open"
+    },
+    {
+      "name": "KMID2",
+      "category": "base",
+      "expression": "($close-$open)/($high-$low+1e-12)"
+    },
+    {
+      "name": "KUP",
+      "category": "base",
+      "expression": "($high-Greater($open, $close))/$open"
+    },
+    {
+      "name": "KUP2",
+      "category": "base",
+      "expression": "($high-Greater($open, $close))/($high-$low+1e-12)"
+    },
+    {
+      "name": "KLOW",
+      "category": "base",
+      "expression": "(Less($open, $close)-$low)/$open"
+    },
+    {
+      "name": "KLOW2",
+      "category": "base",
+      "expression": "(Less($open, $close)-$low)/($high-$low+1e-12)"
+    },
+    {
+      "name": "KSFT",
+      "category": "base",
+      "expression": "(2*$close-$high-$low)/$open"
+    },
+    {
+      "name": "KSFT2",
+      "category": "base",
+      "expression": "(2*$close-$high-$low)/($high-$low+1e-12)"
+    },
+    {
+      "name": "MA5",
+      "category": "base",
+      "expression": "Mean($close, 5)/$close"
+    },
+    {
+      "name": "STD5",
+      "category": "base",
+      "expression": "Std($close, 5)/$close"
+    },
+    {
+      "name": "BETA5",
+      "category": "base",
+      "expression": "Slope($close, 5)/$close"
+    },
+    {
+      "name": "RSQR5",
+      "category": "base",
+      "expression": "Rsquare($close, 5)"
+    },
+    {
+      "name": "RESI5",
+      "category": "base",
+      "expression": "Resi($close, 5)/$close"
+    },
+    {
+      "name": "MAX5",
+      "category": "base",
+      "expression": "Max($close, 5)"
+    },
+    {
+      "name": "MIN5",
+      "category": "base",
+      "expression": "Min($close, 5)"
+    },
+    {
+      "name": "QTLU5",
+      "category": "base",
+      "expression": "Quantile($close, 5, 0.8)"
+    },
+    {
+      "name": "QTLD5",
+      "category": "base",
+      "expression": "Quantile($close, 5, 0.2)"
+    },
+    {
+      "name": "MA10",
+      "category": "base",
+      "expression": "Mean($close, 10)/$close"
+    },
+    {
+      "name": "STD10",
+      "category": "base",
+      "expression": "Std($close, 10)/$close"
+    },
+    {
+      "name": "BETA10",
+      "category": "base",
+      "expression": "Slope($close, 10)/$close"
+    },
+    {
+      "name": "RSQR10",
+      "category": "base",
+      "expression": "Rsquare($close, 10)"
+    },
+    {
+      "name": "RESI10",
+      "category": "base",
+      "expression": "Resi($close, 10)/$close"
+    },
+    {
+      "name": "MAX10",
+      "category": "base",
+      "expression": "Max($close, 10)"
+    },
+    {
+      "name": "MIN10",
+      "category": "base",
+      "expression": "Min($close, 10)"
+    },
+    {
+      "name": "QTLU10",
+      "category": "base",
+      "expression": "Quantile($close, 10, 0.8)"
+    },
+    {
+      "name": "QTLD10",
+      "category": "base",
+      "expression": "Quantile($close, 10, 0.2)"
+    },
+    {
+      "name": "MA20",
+      "category": "base",
+      "expression": "Mean($close, 20)/$close"
+    },
+    {
+      "name": "STD20",
+      "category": "base",
+      "expression": "Std($close, 20)/$close"
+    },
+    {
+      "name": "BETA20",
+      "category": "base",
+      "expression": "Slope($close, 20)/$close"
+    },
+    {
+      "name": "RSQR20",
+      "category": "base",
+      "expression": "Rsquare($close, 20)"
+    },
+    {
+      "name": "RESI20",
+      "category": "base",
+      "expression": "Resi($close, 20)/$close"
+    },
+    {
+      "name": "MAX20",
+      "category": "base",
+      "expression": "Max($close, 20)"
+    },
+    {
+      "name": "MIN20",
+      "category": "base",
+      "expression": "Min($close, 20)"
+    },
+    {
+      "name": "QTLU20",
+      "category": "base",
+      "expression": "Quantile($close, 20, 0.8)"
+    },
+    {
+      "name": "QTLD20",
+      "category": "base",
+      "expression": "Quantile($close, 20, 0.2)"
+    },
+    {
+      "name": "MA30",
+      "category": "base",
+      "expression": "Mean($close, 30)/$close"
+    },
+    {
+      "name": "STD30",
+      "category": "base",
+      "expression": "Std($close, 30)/$close"
+    },
+    {
+      "name": "BETA30",
+      "category": "base",
+      "expression": "Slope($close, 30)/$close"
+    },
+    {
+      "name": "RSQR30",
+      "category": "base",
+      "expression": "Rsquare($close, 30)"
+    },
+    {
+      "name": "RESI30",
+      "category": "base",
+      "expression": "Resi($close, 30)/$close"
+    },
+    {
+      "name": "MAX30",
+      "category": "base",
+      "expression": "Max($close, 30)"
+    },
+    {
+      "name": "MIN30",
+      "category": "base",
+      "expression": "Min($close, 30)"
+    },
+    {
+      "name": "QTLU30",
+      "category": "base",
+      "expression": "Quantile($close, 30, 0.8)"
+    },
+    {
+      "name": "QTLD30",
+      "category": "base",
+      "expression": "Quantile($close, 30, 0.2)"
+    },
+    {
+      "name": "MA60",
+      "category": "base",
+      "expression": "Mean($close, 60)/$close"
+    },
+    {
+      "name": "STD60",
+      "category": "base",
+      "expression": "Std($close, 60)/$close"
+    },
+    {
+      "name": "BETA60",
+      "category": "base",
+      "expression": "Slope($close, 60)/$close"
+    },
+    {
+      "name": "RSQR60",
+      "category": "base",
+      "expression": "Rsquare($close, 60)"
+    },
+    {
+      "name": "RESI60",
+      "category": "base",
+      "expression": "Resi($close, 60)/$close"
+    },
+    {
+      "name": "MAX60",
+      "category": "base",
+      "expression": "Max($close, 60)"
+    },
+    {
+      "name": "MIN60",
+      "category": "base",
+      "expression": "Min($close, 60)"
+    },
+    {
+      "name": "QTLU60",
+      "category": "base",
+      "expression": "Quantile($close, 60, 0.8)"
+    },
+    {
+      "name": "QTLD60",
+      "category": "base",
+      "expression": "Quantile($close, 60, 0.2)"
+    },
+    {
+      "name": "WQ_ALPHA001_RANK_TSARGMAX_SIGNEDPOWER_WHERE_RETURNS_STDDEV",
+      "category": "alpha101",
+      "expression": "(rank(Ts_ArgMax(SignedPower(where((returns < 0), stddev(returns, 20), close), 2.), 5)) - 0.5)"
+    },
+    {
+      "name": "WQ_ALPHA002_CORRELATION_RANK_DELTA_LOG_VOLUME_CLOSE",
+      "category": "alpha101",
+      "expression": "(-1 * correlation(rank(delta(log(volume), 2)), rank(((close - open) / open)), 6))"
+    },
+    {
+      "name": "WQ_ALPHA003_CORRELATION_RANK_OPEN_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * correlation(rank(open), rank(volume), 10))"
+    },
+    {
+      "name": "WQ_ALPHA004_TSRANK_RANK_LOW",
+      "category": "alpha101",
+      "expression": "(-1 * Ts_Rank(rank(low), 9))"
+    },
+    {
+      "name": "WQ_ALPHA005_RANK_OPEN_SUM_VWAP_ABS_CLOSE",
+      "category": "alpha101",
+      "expression": "(rank((open - (sum(vwap, 10) / 10))) * (-1 * abs(rank((close - vwap)))))"
+    },
+    {
+      "name": "WQ_ALPHA006_CORRELATION_OPEN_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * correlation(open, volume, 10))"
+    },
+    {
+      "name": "WQ_ALPHA007_WHERE_ADV_VOLUME_TSRANK_ABS_DELTA",
+      "category": "alpha101",
+      "expression": "(where((adv20 < volume), ((-1 * ts_rank(abs(delta(close, 7)), 60)) * sign(delta(close, 7))), (-1 * 1)))"
+    },
+    {
+      "name": "WQ_ALPHA008_RANK_SUM_OPEN_RETURNS_DELAY",
+      "category": "alpha101",
+      "expression": "(-1 * rank(((sum(open, 5) * sum(returns, 5)) - delay((sum(open, 5) * sum(returns, 5)), 10))))"
+    },
+    {
+      "name": "WQ_ALPHA009_WHERE_TSMIN_DELTA_CLOSE_TSMAX",
+      "category": "alpha101",
+      "expression": "(where((0 < ts_min(delta(close, 1), 5)), delta(close, 1), where((ts_max(delta(close, 1), 5) < 0), delta(close, 1), (-1 * delta(close, 1)))))"
+    },
+    {
+      "name": "WQ_ALPHA010_RANK_WHERE_TSMIN_DELTA_CLOSE_TSMAX",
+      "category": "alpha101",
+      "expression": "rank((where((0 < ts_min(delta(close, 1), 4)), delta(close, 1), where((ts_max(delta(close, 1), 4) < 0), delta(close, 1), (-1 * delta(close, 1))))))"
+    },
+    {
+      "name": "WQ_ALPHA011_RANK_TSMAX_VWAP_CLOSE_TSMIN_DELTA",
+      "category": "alpha101",
+      "expression": "((rank(ts_max((vwap - close), 3)) + rank(ts_min((vwap - close), 3))) * rank(delta(volume, 3)))"
+    },
+    {
+      "name": "WQ_ALPHA012_SIGN_DELTA_VOLUME_CLOSE",
+      "category": "alpha101",
+      "expression": "(sign(delta(volume, 1)) * (-1 * delta(close, 1)))"
+    },
+    {
+      "name": "WQ_ALPHA013_RANK_COVARIANCE_CLOSE_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * rank(covariance(rank(close), rank(volume), 5)))"
+    },
+    {
+      "name": "WQ_ALPHA014_RANK_DELTA_RETURNS_CORRELATION_OPEN_VOLUME",
+      "category": "alpha101",
+      "expression": "((-1 * rank(delta(returns, 3))) * correlation(open, volume, 10))"
+    },
+    {
+      "name": "WQ_ALPHA015_SUM_RANK_CORRELATION_HIGH_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * sum(rank(correlation(rank(high), rank(volume), 3)), 3))"
+    },
+    {
+      "name": "WQ_ALPHA016_RANK_COVARIANCE_HIGH_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * rank(covariance(rank(high), rank(volume), 5)))"
+    },
+    {
+      "name": "WQ_ALPHA017_RANK_TSRANK_CLOSE_DELTA_VOLUME_ADV",
+      "category": "alpha101",
+      "expression": "(((-1 * rank(ts_rank(close, 10))) * rank(delta(delta(close, 1), 1))) * rank(ts_rank((volume / adv20), 5)))"
+    },
+    {
+      "name": "WQ_ALPHA018_RANK_STDDEV_ABS_CLOSE_OPEN_CORRELATION",
+      "category": "alpha101",
+      "expression": "(-1 * rank(((stddev(abs((close - open)), 5) + (close - open)) + correlation(close, open, 10))))"
+    },
+    {
+      "name": "WQ_ALPHA019_SIGN_CLOSE_DELAY_DELTA_RANK_SUM",
+      "category": "alpha101",
+      "expression": "((-1 * sign(((close - delay(close, 7)) + delta(close, 7)))) * (1 + rank((1 + sum(returns, 250)))))"
+    },
+    {
+      "name": "WQ_ALPHA020_RANK_OPEN_DELAY_HIGH_CLOSE_LOW",
+      "category": "alpha101",
+      "expression": "(((-1 * rank((open - delay(high, 1)))) * rank((open - delay(close, 1)))) * rank((open - delay(low, 1))))"
+    },
+    {
+      "name": "WQ_ALPHA021_WHERE_SUM_CLOSE_STDDEV_VOLUME_ADV",
+      "category": "alpha101",
+      "expression": "(where((((sum(close, 8) / 8) + stddev(close, 8)) < (sum(close, 2) / 2)), (-1 * 1), where(((sum(close, 2) / 2) < ((sum(close, 8) / 8) - stddev(close, 8))), 1, where((((1 < (volume / adv20)) | ((volume / adv20) == 1))), 1, (-1 * 1)))))"
+    },
+    {
+      "name": "WQ_ALPHA022_DELTA_CORRELATION_HIGH_VOLUME_RANK_STDDEV",
+      "category": "alpha101",
+      "expression": "(-1 * (delta(correlation(high, volume, 5), 5) * rank(stddev(close, 20))))"
+    },
+    {
+      "name": "WQ_ALPHA023_WHERE_SUM_HIGH_DELTA",
+      "category": "alpha101",
+      "expression": "(where(((sum(high, 20) / 20) < high), (-1 * delta(high, 2)), 0))"
+    },
+    {
+      "name": "WQ_ALPHA024_WHERE_DELTA_SUM_CLOSE_DELAY_TSMIN",
+      "category": "alpha101",
+      "expression": "(where((((delta((sum(close, 100) / 100), 100) / delay(close, 100)) < 0.05) | ((delta((sum(close, 100) / 100), 100) / delay(close, 100)) == 0.05)), (-1 * (close - ts_min(close, 100))), (-1 * delta(close, 3))))"
+    },
+    {
+      "name": "WQ_ALPHA025_RANK_RETURNS_ADV_VWAP_HIGH_CLOSE",
+      "category": "alpha101",
+      "expression": "rank(((((-1 * returns) * adv20) * vwap) * (high - close)))"
+    },
+    {
+      "name": "WQ_ALPHA026_TSMAX_CORRELATION_TSRANK_VOLUME_HIGH",
+      "category": "alpha101",
+      "expression": "(-1 * ts_max(correlation(ts_rank(volume, 5), ts_rank(high, 5), 5), 3))"
+    },
+    {
+      "name": "WQ_ALPHA027_WHERE_RANK_SUM_CORRELATION_VOLUME_VWAP",
+      "category": "alpha101",
+      "expression": "(where((0.5 < rank((sum(correlation(rank(volume), rank(vwap), 6), 2) / 2.0))), (-1 * 1), 1))"
+    },
+    {
+      "name": "WQ_ALPHA028_SCALE_CORRELATION_ADV_LOW_HIGH_CLOSE",
+      "category": "alpha101",
+      "expression": "scale(((correlation(adv20, low, 5) + ((high + low) / 2)) - close))"
+    },
+    {
+      "name": "WQ_ALPHA029_MIN_PRODUCT_RANK_SCALE_LOG_SUM",
+      "category": "alpha101",
+      "expression": "(min(product(rank(rank(scale(log(sum(ts_min(rank(rank((-1 * rank(delta((close - 1), 5))))), 2), 1))))), 1), 5) + ts_rank(delay((-1 * returns), 6), 5))"
+    },
+    {
+      "name": "WQ_ALPHA030_RANK_SIGN_CLOSE_DELAY_SUM_VOLUME",
+      "category": "alpha101",
+      "expression": "(((1.0 - rank(((sign((close - delay(close, 1))) + sign((delay(close, 1) - delay(close, 2)))) + sign((delay(close, 2) - delay(close, 3)))))) * sum(volume, 5)) / sum(volume, 20))"
+    },
+    {
+      "name": "WQ_ALPHA031_RANK_DECAYLINEAR_DELTA_CLOSE_SIGN_SCALE",
+      "category": "alpha101",
+      "expression": "((rank(rank(rank(decay_linear((-1 * rank(rank(delta(close, 10)))), 10)))) + rank((-1 * delta(close, 3)))) + sign(scale(correlation(adv20, low, 12))))"
+    },
+    {
+      "name": "WQ_ALPHA032_SCALE_SUM_CLOSE_CORRELATION_VWAP_DELAY",
+      "category": "alpha101",
+      "expression": "(scale(((sum(close, 7) / 7) - close)) + (20 * scale(correlation(vwap, delay(close, 5), 230))))"
+    },
+    {
+      "name": "WQ_ALPHA033_RANK_OPEN_CLOSE",
+      "category": "alpha101",
+      "expression": "rank((-1 * ((1 - (open / close))^1)))"
+    },
+    {
+      "name": "WQ_ALPHA034_RANK_STDDEV_RETURNS_DELTA_CLOSE",
+      "category": "alpha101",
+      "expression": "rank(((1 - rank((stddev(returns, 2) / stddev(returns, 5)))) + (1 - rank(delta(close, 1)))))"
+    },
+    {
+      "name": "WQ_ALPHA035_TSRANK_VOLUME_CLOSE_HIGH_LOW_RETURNS",
+      "category": "alpha101",
+      "expression": "((Ts_Rank(volume, 32) * (1 - Ts_Rank(((close + high) - low), 16))) * (1 - Ts_Rank(returns, 32)))"
+    },
+    {
+      "name": "WQ_ALPHA036_RANK_CORRELATION_CLOSE_OPEN_DELAY_VOLUME",
+      "category": "alpha101",
+      "expression": "(((((2.21 * rank(correlation((close - open), delay(volume, 1), 15))) + (0.7 * rank((open - close)))) + (0.73 * rank(Ts_Rank(delay((-1 * returns), 6), 5)))) + rank(abs(correlation(vwap, adv20, 6)))) + (0.6 * rank((((sum(close, 200) / 200) - open) * (close - open)))))"
+    },
+    {
+      "name": "WQ_ALPHA037_RANK_CORRELATION_DELAY_OPEN_CLOSE",
+      "category": "alpha101",
+      "expression": "(rank(correlation(delay((open - close), 1), close, 200)) + rank((open - close)))"
+    },
+    {
+      "name": "WQ_ALPHA038_RANK_TSRANK_CLOSE_OPEN",
+      "category": "alpha101",
+      "expression": "((-1 * rank(Ts_Rank(close, 10))) * rank((close / open)))"
+    },
+    {
+      "name": "WQ_ALPHA039_RANK_DELTA_CLOSE_DECAYLINEAR_VOLUME_ADV",
+      "category": "alpha101",
+      "expression": "((-1 * rank((delta(close, 7) * (1 - rank(decay_linear((volume / adv20), 9)))))) * (1 + rank(sum(returns, 250))))"
+    },
+    {
+      "name": "WQ_ALPHA040_RANK_STDDEV_HIGH_CORRELATION_VOLUME",
+      "category": "alpha101",
+      "expression": "((-1 * rank(stddev(high, 10))) * correlation(high, volume, 10))"
+    },
+    {
+      "name": "WQ_ALPHA041_HIGH_LOW_VWAP",
+      "category": "alpha101",
+      "expression": "(((high * low)^0.5) - vwap)"
+    },
+    {
+      "name": "WQ_ALPHA042_RANK_VWAP_CLOSE",
+      "category": "alpha101",
+      "expression": "(rank((vwap - close)) / rank((vwap + close)))"
+    },
+    {
+      "name": "WQ_ALPHA043_TSRANK_VOLUME_ADV_DELTA_CLOSE",
+      "category": "alpha101",
+      "expression": "(ts_rank((volume / adv20), 20) * ts_rank((-1 * delta(close, 7)), 8))"
+    },
+    {
+      "name": "WQ_ALPHA044_CORRELATION_HIGH_RANK_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * correlation(high, rank(volume), 5))"
+    },
+    {
+      "name": "WQ_ALPHA045_RANK_SUM_DELAY_CLOSE_CORRELATION_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * ((rank((sum(delay(close, 5), 20) / 20)) * correlation(close, volume, 2)) * rank(correlation(sum(close, 5), sum(close, 20), 2))))"
+    },
+    {
+      "name": "WQ_ALPHA046_WHERE_DELAY_CLOSE",
+      "category": "alpha101",
+      "expression": "(where((0.25 < (((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10))), (-1 * 1), where(((((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10)) < 0), 1, ((-1 * 1) * (close - delay(close, 1))))))"
+    },
+    {
+      "name": "WQ_ALPHA047_RANK_CLOSE_VOLUME_ADV_HIGH_SUM",
+      "category": "alpha101",
+      "expression": "((((rank((1 / close)) * volume) / adv20) * ((high * rank((high - close))) / (sum(high, 5) / 5))) - rank((vwap - delay(vwap, 5))))"
+    },
+    {
+      "name": "WQ_ALPHA048_INDNEUTRALIZE_CORRELATION_DELTA_CLOSE_DELAY_SUM",
+      "category": "alpha101",
+      "expression": "(indneutralize(((correlation(delta(close, 1), delta(delay(close, 1), 1), 250) * delta(close, 1)) / close), IndClass.subindustry) / sum(((delta(close, 1) / delay(close, 1))^2), 250))"
+    },
+    {
+      "name": "WQ_ALPHA049_WHERE_DELAY_CLOSE",
+      "category": "alpha101",
+      "expression": "(where((((((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10)) < (-1 * 0.1))), 1, ((-1 * 1) * (close - delay(close, 1)))))"
+    },
+    {
+      "name": "WQ_ALPHA050_TSMAX_RANK_CORRELATION_VOLUME_VWAP",
+      "category": "alpha101",
+      "expression": "(-1 * ts_max(rank(correlation(rank(volume), rank(vwap), 5)), 5))"
+    },
+    {
+      "name": "WQ_ALPHA051_WHERE_DELAY_CLOSE",
+      "category": "alpha101",
+      "expression": "(where((((((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10)) < (-1 * 0.05))), 1, ((-1 * 1) * (close - delay(close, 1)))))"
+    },
+    {
+      "name": "WQ_ALPHA052_TSMIN_LOW_DELAY_RANK_SUM_RETURNS",
+      "category": "alpha101",
+      "expression": "((((-1 * ts_min(low, 5)) + delay(ts_min(low, 5), 5)) * rank(((sum(returns, 240) - sum(returns, 20)) / 220))) * ts_rank(volume, 5))"
+    },
+    {
+      "name": "WQ_ALPHA053_DELTA_CLOSE_LOW_HIGH",
+      "category": "alpha101",
+      "expression": "(-1 * delta((((close - low) - (high - close)) / (close - low)), 9))"
+    },
+    {
+      "name": "WQ_ALPHA054_LOW_CLOSE_OPEN_HIGH",
+      "category": "alpha101",
+      "expression": "((-1 * ((low - close) * (open^5))) / ((low - high) * (close^5)))"
+    },
+    {
+      "name": "WQ_ALPHA055_CORRELATION_RANK_CLOSE_TSMIN_LOW_TSMAX",
+      "category": "alpha101",
+      "expression": "(-1 * correlation(rank(((close - ts_min(low, 12)) / (ts_max(high, 12) - ts_min(low, 12)))), rank(volume), 6))"
+    },
+    {
+      "name": "WQ_ALPHA056_RANK_SUM_RETURNS_CAP",
+      "category": "alpha101",
+      "expression": "(0 - (1 * (rank((sum(returns, 10) / sum(sum(returns, 2), 3))) * rank((returns * cap)))))"
+    },
+    {
+      "name": "WQ_ALPHA057_CLOSE_VWAP_DECAYLINEAR_RANK_TSARGMAX",
+      "category": "alpha101",
+      "expression": "(0 - (1 * ((close - vwap) / decay_linear(rank(ts_argmax(close, 30)), 2))))"
+    },
+    {
+      "name": "WQ_ALPHA058_TSRANK_DECAYLINEAR_CORRELATION_INDNEUTRALIZE_VWAP_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * Ts_Rank(decay_linear(correlation(IndNeutralize(vwap, IndClass.sector), volume, 3.92795), 7.89291), 5.50322))"
+    },
+    {
+      "name": "WQ_ALPHA059_TSRANK_DECAYLINEAR_CORRELATION_INDNEUTRALIZE_VWAP_VOLUME",
+      "category": "alpha101",
+      "expression": "(-1 * Ts_Rank(decay_linear(correlation(IndNeutralize(((vwap * 0.728317) + (vwap * (1 - 0.728317))), IndClass.industry), volume, 4.25197), 16.2289), 8.19648))"
+    },
+    {
+      "name": "WQ_ALPHA060_SCALE_RANK_CLOSE_LOW_HIGH_VOLUME",
+      "category": "alpha101",
+      "expression": "(0 - (1 * ((2 * scale(rank(((((close - low) - (high - close)) / (high - low)) * volume)))) - scale(rank(ts_argmax(close, 10))))))"
+    },
+    {
+      "name": "WQ_ALPHA061_RANK_VWAP_TSMIN_CORRELATION_ADV",
+      "category": "alpha101",
+      "expression": "(rank((vwap - ts_min(vwap, 16.1219))) < rank(correlation(vwap, adv180, 17.9282)))"
+    },
+    {
+      "name": "WQ_ALPHA062_RANK_CORRELATION_VWAP_SUM_ADV_OPEN",
+      "category": "alpha101",
+      "expression": "((rank(correlation(vwap, sum(adv20, 22.4101), 9.91009)) < rank(((rank(open) + rank(open)) < (rank(((high + low) / 2)) + rank(high))))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA063_RANK_DECAYLINEAR_DELTA_INDNEUTRALIZE_CLOSE_CORRELATION",
+      "category": "alpha101",
+      "expression": "((rank(decay_linear(delta(IndNeutralize(close, IndClass.industry), 2.25164), 8.22237)) - rank(decay_linear(correlation(((vwap * 0.318108) + (open * (1 - 0.318108))), sum(adv180, 37.2467), 13.557), 12.2883))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA064_RANK_CORRELATION_SUM_OPEN_LOW_ADV",
+      "category": "alpha101",
+      "expression": "((rank(correlation(sum(((open * 0.178404) + (low * (1 - 0.178404))), 12.7054), sum(adv120, 12.7054), 16.6208)) < rank(delta(((((high + low) / 2) * 0.178404) + (vwap * (1 - 0.178404))), 3.69741))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA065_RANK_CORRELATION_OPEN_VWAP_SUM_ADV",
+      "category": "alpha101",
+      "expression": "((rank(correlation(((open * 0.00817205) + (vwap * (1 - 0.00817205))), sum(adv60, 8.6911), 6.40374)) < rank((open - ts_min(open, 13.635)))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA066_RANK_DECAYLINEAR_DELTA_VWAP_TSRANK_LOW",
+      "category": "alpha101",
+      "expression": "((rank(decay_linear(delta(vwap, 3.51013), 7.23052)) + Ts_Rank(decay_linear(((((low * 0.96633) + (low * (1 - 0.96633))) - vwap) / (open - ((high + low) / 2))), 11.4157), 6.72611)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA067_RANK_HIGH_TSMIN_CORRELATION_INDNEUTRALIZE_VWAP",
+      "category": "alpha101",
+      "expression": "((rank((high - ts_min(high, 2.14593)))^rank(correlation(IndNeutralize(vwap, IndClass.sector), IndNeutralize(adv20, IndClass.subindustry), 6.02936))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA068_TSRANK_CORRELATION_RANK_HIGH_ADV_DELTA",
+      "category": "alpha101",
+      "expression": "((Ts_Rank(correlation(rank(high), rank(adv15), 8.91644), 13.9333) < rank(delta(((close * 0.518371) + (low * (1 - 0.518371))), 1.06157))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA069_RANK_TSMAX_DELTA_INDNEUTRALIZE_VWAP_TSRANK",
+      "category": "alpha101",
+      "expression": "((rank(ts_max(delta(IndNeutralize(vwap, IndClass.industry), 2.72412), 4.79344))^Ts_Rank(correlation(((close * 0.490655) + (vwap * (1 - 0.490655))), adv20, 4.92416), 9.0615)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA070_RANK_DELTA_VWAP_TSRANK_CORRELATION_INDNEUTRALIZE",
+      "category": "alpha101",
+      "expression": "((rank(delta(vwap, 1.29456))^Ts_Rank(correlation(IndNeutralize(close, IndClass.industry), adv50, 17.8256), 17.9171)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA071_MAX_TSRANK_DECAYLINEAR_CORRELATION_CLOSE_ADV",
+      "category": "alpha101",
+      "expression": "max(Ts_Rank(decay_linear(correlation(Ts_Rank(close, 3.43976), Ts_Rank(adv180, 12.0647), 18.0175), 4.20501), 15.6948), Ts_Rank(decay_linear((rank(((low + open) - (vwap + vwap)))^2), 16.4662), 4.4388))"
+    },
+    {
+      "name": "WQ_ALPHA072_RANK_DECAYLINEAR_CORRELATION_HIGH_LOW_ADV",
+      "category": "alpha101",
+      "expression": "(rank(decay_linear(correlation(((high + low) / 2), adv40, 8.93345), 10.1519)) / rank(decay_linear(correlation(Ts_Rank(vwap, 3.72469), Ts_Rank(volume, 18.5188), 6.86671), 2.95011)))"
+    },
+    {
+      "name": "WQ_ALPHA073_MAX_RANK_DECAYLINEAR_DELTA_VWAP_TSRANK",
+      "category": "alpha101",
+      "expression": "(max(rank(decay_linear(delta(vwap, 4.72775), 2.91864)), Ts_Rank(decay_linear(((delta(((open * 0.147155) + (low * (1 - 0.147155))), 2.03608) / ((open * 0.147155) + (low * (1 - 0.147155)))) * -1), 3.33829), 16.7411)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA074_RANK_CORRELATION_CLOSE_SUM_ADV_HIGH",
+      "category": "alpha101",
+      "expression": "((rank(correlation(close, sum(adv30, 37.4843), 15.1365)) < rank(correlation(rank(((high * 0.0261661) + (vwap * (1 - 0.0261661)))), rank(volume), 11.4791))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA075_RANK_CORRELATION_VWAP_VOLUME_LOW_ADV",
+      "category": "alpha101",
+      "expression": "(rank(correlation(vwap, volume, 4.24304)) < rank(correlation(rank(low), rank(adv50), 12.4413)))"
+    },
+    {
+      "name": "WQ_ALPHA076_MAX_RANK_DECAYLINEAR_DELTA_VWAP_TSRANK",
+      "category": "alpha101",
+      "expression": "(max(rank(decay_linear(delta(vwap, 1.24383), 11.8259)), Ts_Rank(decay_linear(Ts_Rank(correlation(IndNeutralize(low, IndClass.sector), adv81, 8.14941), 19.569), 17.1543), 19.383)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA077_MIN_RANK_DECAYLINEAR_HIGH_LOW_VWAP",
+      "category": "alpha101",
+      "expression": "min(rank(decay_linear(((((high + low) / 2) + high) - (vwap + high)), 20.0451)), rank(decay_linear(correlation(((high + low) / 2), adv40, 3.1614), 5.64125)))"
+    },
+    {
+      "name": "WQ_ALPHA078_RANK_CORRELATION_SUM_LOW_VWAP_ADV",
+      "category": "alpha101",
+      "expression": "(rank(correlation(sum(((low * 0.352233) + (vwap * (1 - 0.352233))), 19.7428), sum(adv40, 19.7428), 6.83313))^rank(correlation(rank(vwap), rank(volume), 5.77492)))"
+    },
+    {
+      "name": "WQ_ALPHA079_RANK_DELTA_INDNEUTRALIZE_CLOSE_OPEN_CORRELATION",
+      "category": "alpha101",
+      "expression": "(rank(delta(IndNeutralize(((close * 0.60733) + (open * (1 - 0.60733))), IndClass.sector), 1.23438)) < rank(correlation(Ts_Rank(vwap, 3.60973), Ts_Rank(adv150, 9.18637), 14.6644)))"
+    },
+    {
+      "name": "WQ_ALPHA080_RANK_SIGN_DELTA_INDNEUTRALIZE_OPEN_HIGH",
+      "category": "alpha101",
+      "expression": "((rank(Sign(delta(IndNeutralize(((open * 0.868128) + (high * (1 - 0.868128))), IndClass.industry), 4.04545)))^Ts_Rank(correlation(high, adv10, 5.11456), 5.53756)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA081_RANK_LOG_PRODUCT_CORRELATION_VWAP_SUM",
+      "category": "alpha101",
+      "expression": "((rank(Log(product(rank((rank(correlation(vwap, sum(adv10, 49.6054), 8.47743))^4)), 14.9655))) < rank(correlation(rank(vwap), rank(volume), 5.07914))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA082_MIN_RANK_DECAYLINEAR_DELTA_OPEN_TSRANK",
+      "category": "alpha101",
+      "expression": "(min(rank(decay_linear(delta(open, 1.46063), 14.8717)), Ts_Rank(decay_linear(correlation(IndNeutralize(volume, IndClass.sector), ((open * 0.634196) + (open * (1 - 0.634196))), 17.4842), 6.92131), 13.4283)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA083_RANK_DELAY_HIGH_LOW_SUM_CLOSE",
+      "category": "alpha101",
+      "expression": "((rank(delay(((high - low) / (sum(close, 5) / 5)), 2)) * rank(rank(volume))) / (((high - low) / (sum(close, 5) / 5)) / (vwap - close)))"
+    },
+    {
+      "name": "WQ_ALPHA084_SIGNEDPOWER_TSRANK_VWAP_TSMAX_DELTA_CLOSE",
+      "category": "alpha101",
+      "expression": "SignedPower(Ts_Rank((vwap - ts_max(vwap, 15.3217)), 20.7127), delta(close, 4.96796))"
+    },
+    {
+      "name": "WQ_ALPHA085_RANK_CORRELATION_HIGH_CLOSE_ADV_TSRANK",
+      "category": "alpha101",
+      "expression": "(rank(correlation(((high * 0.876703) + (close * (1 - 0.876703))), adv30, 9.61331))^rank(correlation(Ts_Rank(((high + low) / 2), 3.70596), Ts_Rank(volume, 10.1595), 7.11408)))"
+    },
+    {
+      "name": "WQ_ALPHA086_TSRANK_CORRELATION_CLOSE_SUM_ADV_RANK",
+      "category": "alpha101",
+      "expression": "((Ts_Rank(correlation(close, sum(adv20, 14.7444), 6.00049), 20.4195) < rank(((open + close) - (vwap + open)))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA087_MAX_RANK_DECAYLINEAR_DELTA_CLOSE_VWAP",
+      "category": "alpha101",
+      "expression": "(max(rank(decay_linear(delta(((close * 0.369701) + (vwap * (1 - 0.369701))), 1.91233), 2.65461)), Ts_Rank(decay_linear(abs(correlation(IndNeutralize(adv81, IndClass.industry), close, 13.4132)), 4.89768), 14.4535)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA088_MIN_RANK_DECAYLINEAR_OPEN_LOW_HIGH",
+      "category": "alpha101",
+      "expression": "min(rank(decay_linear(((rank(open) + rank(low)) - (rank(high) + rank(close))), 8.06882)), Ts_Rank(decay_linear(correlation(Ts_Rank(close, 8.44728), Ts_Rank(adv60, 20.6966), 8.01266), 6.65053), 2.61957))"
+    },
+    {
+      "name": "WQ_ALPHA089_TSRANK_DECAYLINEAR_CORRELATION_LOW_ADV_DELTA",
+      "category": "alpha101",
+      "expression": "(Ts_Rank(decay_linear(correlation(((low * 0.967285) + (low * (1 - 0.967285))), adv10, 6.94279), 5.51607), 3.79744) - Ts_Rank(decay_linear(delta(IndNeutralize(vwap, IndClass.industry), 3.48158), 10.1466), 15.3012))"
+    },
+    {
+      "name": "WQ_ALPHA090_RANK_CLOSE_TSMAX_TSRANK_CORRELATION_INDNEUTRALIZE",
+      "category": "alpha101",
+      "expression": "((rank((close - ts_max(close, 4.66719)))^Ts_Rank(correlation(IndNeutralize(adv40, IndClass.subindustry), low, 5.38375), 3.21856)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA091_TSRANK_DECAYLINEAR_CORRELATION_INDNEUTRALIZE_CLOSE_VOLUME",
+      "category": "alpha101",
+      "expression": "((Ts_Rank(decay_linear(decay_linear(correlation(IndNeutralize(close, IndClass.industry), volume, 9.74928), 16.398), 3.83219), 4.8667) - rank(decay_linear(correlation(vwap, adv30, 4.01303), 2.6809))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA092_MIN_TSRANK_DECAYLINEAR_HIGH_LOW_CLOSE",
+      "category": "alpha101",
+      "expression": "min(Ts_Rank(decay_linear(((((high + low) / 2) + close) < (low + open)), 14.7221), 18.8683), Ts_Rank(decay_linear(correlation(rank(low), rank(adv30), 7.58555), 6.94024), 6.80584))"
+    },
+    {
+      "name": "WQ_ALPHA093_TSRANK_DECAYLINEAR_CORRELATION_INDNEUTRALIZE_VWAP_ADV",
+      "category": "alpha101",
+      "expression": "(Ts_Rank(decay_linear(correlation(IndNeutralize(vwap, IndClass.industry), adv81, 17.4193), 19.848), 7.54455) / rank(decay_linear(delta(((close * 0.524434) + (vwap * (1 - 0.524434))), 2.77377), 16.2664)))"
+    },
+    {
+      "name": "WQ_ALPHA094_RANK_VWAP_TSMIN_TSRANK_CORRELATION_ADV",
+      "category": "alpha101",
+      "expression": "((rank((vwap - ts_min(vwap, 11.5783)))^Ts_Rank(correlation(Ts_Rank(vwap, 19.6462), Ts_Rank(adv60, 4.02992), 18.0926), 2.70756)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA095_RANK_OPEN_TSMIN_TSRANK_CORRELATION_SUM",
+      "category": "alpha101",
+      "expression": "(rank((open - ts_min(open, 12.4105))) < Ts_Rank((rank(correlation(sum(((high + low) / 2), 19.1351), sum(adv40, 19.1351), 12.8742))^5), 11.7584))"
+    },
+    {
+      "name": "WQ_ALPHA096_MAX_TSRANK_DECAYLINEAR_CORRELATION_RANK_VWAP",
+      "category": "alpha101",
+      "expression": "(max(Ts_Rank(decay_linear(correlation(rank(vwap), rank(volume), 3.83878), 4.16783), 8.38151), Ts_Rank(decay_linear(Ts_ArgMax(correlation(Ts_Rank(close, 7.45404), Ts_Rank(adv60, 4.13242), 3.65459), 12.6556), 14.0365), 13.4143)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA097_RANK_DECAYLINEAR_DELTA_INDNEUTRALIZE_LOW_VWAP",
+      "category": "alpha101",
+      "expression": "((rank(decay_linear(delta(IndNeutralize(((low * 0.721001) + (vwap * (1 - 0.721001))), IndClass.industry), 3.3705), 20.4523)) - Ts_Rank(decay_linear(Ts_Rank(correlation(Ts_Rank(low, 7.87871), Ts_Rank(adv60, 17.255), 4.97547), 18.5925), 15.7152), 6.71659)) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA098_RANK_DECAYLINEAR_CORRELATION_VWAP_SUM_ADV",
+      "category": "alpha101",
+      "expression": "(rank(decay_linear(correlation(vwap, sum(adv5, 26.4719), 4.58418), 7.18088)) - rank(decay_linear(Ts_Rank(Ts_ArgMin(correlation(rank(open), rank(adv15), 20.8187), 8.62571), 6.95668), 8.07206)))"
+    },
+    {
+      "name": "WQ_ALPHA099_RANK_CORRELATION_SUM_HIGH_LOW_ADV",
+      "category": "alpha101",
+      "expression": "((rank(correlation(sum(((high + low) / 2), 19.8975), sum(adv60, 19.8975), 8.8136)) < rank(correlation(low, volume, 6.28259))) * -1)"
+    },
+    {
+      "name": "WQ_ALPHA100_SCALE_INDNEUTRALIZE_RANK_CLOSE_LOW_HIGH",
+      "category": "alpha101",
+      "expression": "(0 - (1 * (((1.5 * scale(indneutralize(indneutralize(rank(((((close - low) - (high - close)) / (high - low)) * volume)), IndClass.subindustry), IndClass.subindustry))) - scale(indneutralize((correlation(close, rank(adv20), 5) - rank(ts_argmin(close, 30))), IndClass.subindustry))) * (volume / adv20))))"
+    },
+    {
+      "name": "WQ_ALPHA101_CLOSE_OPEN_HIGH_LOW",
+      "category": "alpha101",
+      "expression": "((close - open) / ((high - low) + .001))"
+    },
+    {
+      "name": "GTJA_ALPHA_001",
+      "category": "alpha191",
+      "expression": "(-1 * CORR(RANK(DELTA(LOG(VOLUME), 1)), RANK(((CLOSE - OPEN) / OPEN)), 6))"
+    },
+    {
+      "name": "GTJA_ALPHA_002",
+      "category": "alpha191",
+      "expression": "(-1 * DELTA((((CLOSE - LOW) - (HIGH - CLOSE)) / (HIGH - LOW)), 1))"
+    },
+    {
+      "name": "GTJA_ALPHA_003",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE=DELAY(CLOSE,1)?0:CLOSE-(CLOSE>DELAY(CLOSE,1)?MIN(LOW,DELAY(CLOSE,1)):MAX(HIGH,DELAY(CLOSE,1)))),6)"
+    },
+    {
+      "name": "GTJA_ALPHA_004",
+      "category": "alpha191",
+      "expression": "((((SUM(CLOSE, 8) / 8) + STD(CLOSE, 8)) < (SUM(CLOSE, 2) / 2)) ? ( -1 * 1) : (((SUM(CLOSE, 2) / 2) < ((SUM(CLOSE, 8) / 8) - STD(CLOSE, 8))) ? 1 : (((1 < (VOLUME / MEAN(VOLUME,20))) || ((VOLUME / MEAN(VOLUME,20)) == 1)) ? 1 : (-1 * 1))))"
+    },
+    {
+      "name": "GTJA_ALPHA_005",
+      "category": "alpha191",
+      "expression": "(-1 * TSMAX(CORR(TSRANK(VOLUME, 5), TSRANK(HIGH, 5), 5), 3))"
+    },
+    {
+      "name": "GTJA_ALPHA_006",
+      "category": "alpha191",
+      "expression": "(RANK(SIGN(DELTA((((OPEN * 0.85) + (HIGH * 0.15))), 4)))* -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_007",
+      "category": "alpha191",
+      "expression": "((RANK(MAX((VWAP - CLOSE), 3)) + RANK(MIN((VWAP - CLOSE), 3))) * RANK(DELTA(VOLUME, 3)))"
+    },
+    {
+      "name": "GTJA_ALPHA_008",
+      "category": "alpha191",
+      "expression": "RANK(DELTA(((((HIGH + LOW) / 2) * 0.2) + (VWAP * 0.8)), 4) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_009",
+      "category": "alpha191",
+      "expression": "SMA(((HIGH+LOW)/2-(DELAY(HIGH,1)+DELAY(LOW,1))/2)*(HIGH-LOW)/VOLUME,7,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_010",
+      "category": "alpha191",
+      "expression": "(RANK(MAX(((RET < 0) ? STD(RET, 20) : CLOSE)^2),5))"
+    },
+    {
+      "name": "GTJA_ALPHA_011",
+      "category": "alpha191",
+      "expression": "SUM(((CLOSE-LOW)-(HIGH-CLOSE))./(HIGH-LOW).*VOLUME,6)"
+    },
+    {
+      "name": "GTJA_ALPHA_012",
+      "category": "alpha191",
+      "expression": "(RANK((OPEN - (SUM(VWAP , 10) / 10)))) * (-1 * (RANK(ABS((CLOSE - VWAP)))))"
+    },
+    {
+      "name": "GTJA_ALPHA_013",
+      "category": "alpha191",
+      "expression": "(((HIGH * LOW)^0.5) - VWAP)"
+    },
+    {
+      "name": "GTJA_ALPHA_014",
+      "category": "alpha191",
+      "expression": "CLOSE-DELAY(CLOSE,5)"
+    },
+    {
+      "name": "GTJA_ALPHA_015",
+      "category": "alpha191",
+      "expression": "OPEN/DELAY(CLOSE,1)-1"
+    },
+    {
+      "name": "GTJA_ALPHA_016",
+      "category": "alpha191",
+      "expression": "(-1 * TSMAX(RANK(CORR(RANK(VOLUME), RANK(VWAP), 5)), 5))"
+    },
+    {
+      "name": "GTJA_ALPHA_017",
+      "category": "alpha191",
+      "expression": "RANK((VWAP - MAX(VWAP , 15)))^DELTA(CLOSE, 5)"
+    },
+    {
+      "name": "GTJA_ALPHA_018",
+      "category": "alpha191",
+      "expression": "CLOSE/DELAY(CLOSE,5)"
+    },
+    {
+      "name": "GTJA_ALPHA_019",
+      "category": "alpha191",
+      "expression": "(CLOSE<DELAY(CLOSE,5)?(CLOSE-DELAY(CLOSE,5))/DELAY(CLOSE,5):(CLOSE=DELAY(CLOSE,5)?0:(CLOSE-DELAY(CLOSE,5))/CLOSE))"
+    },
+    {
+      "name": "GTJA_ALPHA_020",
+      "category": "alpha191",
+      "expression": "(CLOSE-DELAY(CLOSE,6))/DELAY(CLOSE,6)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_021",
+      "category": "alpha191",
+      "expression": "REGBETA(MEAN(CLOSE,6),SEQUENCE(6))"
+    },
+    {
+      "name": "GTJA_ALPHA_022",
+      "category": "alpha191",
+      "expression": "SMEAN(((CLOSE-MEAN(CLOSE,6))/MEAN(CLOSE,6)-DELAY((CLOSE-MEAN(CLOSE,6))/MEAN(CLOSE,6),3)),12,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_023",
+      "category": "alpha191",
+      "expression": "SMA((CLOSE>DELAY(CLOSE,1)?STD(CLOSE:20),0),20,1)/(SMA((CLOSE>DELAY(CLOSE,1)?STD(CLOSE,20):0),20,1 )+SMA((CLOSE<=DELAY(CLOSE,1)?STD(CLOSE,20):0),20,1))*100"
+    },
+    {
+      "name": "GTJA_ALPHA_024",
+      "category": "alpha191",
+      "expression": "SMA(CLOSE-DELAY(CLOSE,5),5,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_025",
+      "category": "alpha191",
+      "expression": "((-1 * RANK((DELTA(CLOSE, 7) * (1 - RANK(DECAYLINEAR((VOLUME / MEAN(VOLUME,20)), 9)))))) * (1 + RANK(SUM(RET, 250))))"
+    },
+    {
+      "name": "GTJA_ALPHA_026",
+      "category": "alpha191",
+      "expression": "((((SUM(CLOSE, 7) / 7) - CLOSE)) + ((CORR(VWAP , DELAY(CLOSE, 5), 230))))"
+    },
+    {
+      "name": "GTJA_ALPHA_027",
+      "category": "alpha191",
+      "expression": "WMA((CLOSE-DELAY(CLOSE,3))/DELAY(CLOSE,3)*100+(CLOSE-DELAY(CLOSE,6))/DELAY(CLOSE,6)*100,12)"
+    },
+    {
+      "name": "GTJA_ALPHA_028",
+      "category": "alpha191",
+      "expression": "3*SMA((CLOSE-TSMIN(LOW,9))/(TSMAX(HIGH,9)-TSMIN(LOW,9))*100,3,1)-2*SMA(SMA((CLOSE-TSMIN(LOW,9))/( MAX(HIGH,9)-TSMAX(LOW,9))*100,3,1),3,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_029",
+      "category": "alpha191",
+      "expression": "(CLOSE-DELAY(CLOSE,6))/DELAY(CLOSE,6)*VOLUME"
+    },
+    {
+      "name": "GTJA_ALPHA_030",
+      "category": "alpha191",
+      "expression": "WMA((REGRESI(CLOSE/DELAY(CLOSE)-1,MKT,SMB,HML，60))^2,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_031",
+      "category": "alpha191",
+      "expression": "(CLOSE-MEAN(CLOSE,12))/MEAN(CLOSE,12)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_032",
+      "category": "alpha191",
+      "expression": "(-1 * SUM(RANK(CORR(RANK(HIGH), RANK(VOLUME), 3)), 3))"
+    },
+    {
+      "name": "GTJA_ALPHA_033",
+      "category": "alpha191",
+      "expression": "((((-1 * TSMIN(LOW, 5)) + DELAY(TSMIN(LOW, 5), 5)) * RANK(((SUM(RET, 240) - SUM(RET, 20)) / 220))) * TSRANK(VOLUME, 5))"
+    },
+    {
+      "name": "GTJA_ALPHA_034",
+      "category": "alpha191",
+      "expression": "MEAN(CLOSE,12)/CLOSE"
+    },
+    {
+      "name": "GTJA_ALPHA_035",
+      "category": "alpha191",
+      "expression": "(MIN(RANK(DECAYLINEAR(DELTA(OPEN, 1), 15)), RANK(DECAYLINEAR(CORR((VOLUME), ((OPEN * 0.65) + (OPEN *0.35)), 17),7))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_036",
+      "category": "alpha191",
+      "expression": "RANK(SUM(CORR(RANK(VOLUME), RANK(VWAP)), 6), 2)"
+    },
+    {
+      "name": "GTJA_ALPHA_037",
+      "category": "alpha191",
+      "expression": "(-1 * RANK(((SUM(OPEN, 5) * SUM(RET, 5)) - DELAY((SUM(OPEN, 5) * SUM(RET, 5)), 10))))"
+    },
+    {
+      "name": "GTJA_ALPHA_038",
+      "category": "alpha191",
+      "expression": "(((SUM(HIGH, 20) / 20) < HIGH) ? (-1 * DELTA(HIGH, 2)) : 0)"
+    },
+    {
+      "name": "GTJA_ALPHA_039",
+      "category": "alpha191",
+      "expression": "((RANK(DECAYLINEAR(DELTA((CLOSE), 2),8)) - RANK(DECAYLINEAR(CORR(((VWAP * 0.3) + (OPEN * 0.7)), SUM(MEAN(VOLUME,180), 37), 14), 12))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_040",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE>DELAY(CLOSE,1)?VOLUME:0),26)/SUM((CLOSE<=DELAY(CLOSE,1)?VOLUME:0),26)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_041",
+      "category": "alpha191",
+      "expression": "(RANK(MAX(DELTA((VWAP), 3), 5))* -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_042",
+      "category": "alpha191",
+      "expression": "((-1 * RANK(STD(HIGH, 10))) * CORR(HIGH, VOLUME, 10))"
+    },
+    {
+      "name": "GTJA_ALPHA_043",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE>DELAY(CLOSE,1)?VOLUME:(CLOSE<DELAY(CLOSE,1)?-VOLUME:0)),6)"
+    },
+    {
+      "name": "GTJA_ALPHA_044",
+      "category": "alpha191",
+      "expression": "(TSRANK(DECAYLINEAR(CORR(((LOW )), MEAN(VOLUME,10), 7), 6),4) + TSRANK(DECAYLINEAR(DELTA((VWAP), 3), 10), 15))"
+    },
+    {
+      "name": "GTJA_ALPHA_045",
+      "category": "alpha191",
+      "expression": "(RANK(DELTA((((CLOSE * 0.6) + (OPEN *0.4))), 1)) * RANK(CORR(VWAP , MEAN(VOLUME,150), 15)))"
+    },
+    {
+      "name": "GTJA_ALPHA_046",
+      "category": "alpha191",
+      "expression": "(MEAN(CLOSE,3)+MEAN(CLOSE,6)+MEAN(CLOSE,12)+MEAN(CLOSE,24))/(4*CLOSE)"
+    },
+    {
+      "name": "GTJA_ALPHA_047",
+      "category": "alpha191",
+      "expression": "SMA((TSMAX(HIGH,6)-CLOSE)/(TSMAX(HIGH,6)-TSMIN(LOW,6))*100,9,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_048",
+      "category": "alpha191",
+      "expression": "(-1*((RANK(((SIGN((CLOSE - DELAY(CLOSE, 1))) + SIGN((DELAY(CLOSE, 1) - DELAY(CLOSE, 2)))) + SIGN((DELAY(CLOSE, 2) - DELAY(CLOSE, 3)))))) * SUM(VOLUME, 5)) / SUM(VOLUME, 20))"
+    },
+    {
+      "name": "GTJA_ALPHA_049",
+      "category": "alpha191",
+      "expression": "SUM(((HIGH+LOW)>=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)/(SUM(((HIGH+LOW)>=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)+SUM(((HIGH+LOW)<=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12))"
+    },
+    {
+      "name": "GTJA_ALPHA_050",
+      "category": "alpha191",
+      "expression": "SUM(((HIGH+LOW)<=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)/(SUM(((HIGH+LOW)<=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)+SUM(((HIGH+LOW)>=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12))-SUM(((HIGH+LOW)>=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)/(SUM(((HIGH+LOW)>=(DELAY(HIGH,1)+DELAY(LOW,1))?0: MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)+SUM(((HIGH+LOW)<=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12))"
+    },
+    {
+      "name": "GTJA_ALPHA_051",
+      "category": "alpha191",
+      "expression": "SUM(((HIGH+LOW)<=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)/(SUM(((HIGH+LOW)<=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12)+SUM(((HIGH+LOW)>=(DELAY(HIGH,1)+DELAY(LOW,1))?0:MAX(ABS(HIGH-DELAY(HIGH,1)),ABS(LOW-DELAY(LOW,1)))),12))"
+    },
+    {
+      "name": "GTJA_ALPHA_052",
+      "category": "alpha191",
+      "expression": "SUM(MAX(0,HIGH-DELAY((HIGH+LOW+CLOSE)/3,1)),26)/SUM(MAX(0,DELAY((HIGH+LOW+CLOSE)/3,1)-L),26)* 100"
+    },
+    {
+      "name": "GTJA_ALPHA_053",
+      "category": "alpha191",
+      "expression": "COUNT(CLOSE>DELAY(CLOSE,1),12)/12*100"
+    },
+    {
+      "name": "GTJA_ALPHA_054",
+      "category": "alpha191",
+      "expression": "(-1 * RANK((STD(ABS(CLOSE - OPEN)) + (CLOSE - OPEN)) + CORR(CLOSE, OPEN,10)))"
+    },
+    {
+      "name": "GTJA_ALPHA_055",
+      "category": "alpha191",
+      "expression": "SUM(16*(CLOSE-DELAY(CLOSE,1)+(CLOSE-OPEN)/2+DELAY(CLOSE,1)-DELAY(OPEN,1))/((ABS(HIGH-DELAY(CLOSE,1))>ABS(LOW-DELAY(CLOSE,1)) & ABS(HIGH-DELAY(CLOSE,1))>ABS(HIGH-DELAY(LOW,1))?ABS(HIGH-DELAY(CLOSE,1))+ABS(LOW-DELAY(CLOSE,1))/2+ABS(DELAY(CLOSE,1)-DELAY(OPEN,1))/4:(ABS(LOW-DELAY(CLOSE,1))>ABS(HIGH-DELAY(LOW,1)) & ABS(LOW-DELAY(CLOSE,1))>ABS(HIGH-DELAY(CLOSE,1))?ABS(LOW-DELAY(CLOSE,1))+ABS(HIGH-DELAY(CLOSE,1))/2+ABS(DELAY(CLOSE,1)-DELAY(OPEN,1))/4:ABS(HIGH-DELAY(LOW,1))+ABS(DELAY(CLOSE,1)-DELAY(OPEN,1))/4)))*MAX(ABS(HIGH-DELAY(CLOSE,1)),ABS(LOW-DELAY(CLOSE,1))),20)"
+    },
+    {
+      "name": "GTJA_ALPHA_056",
+      "category": "alpha191",
+      "expression": "(RANK((OPEN - TSMIN(OPEN, 12))) < RANK((RANK(CORR(SUM(((HIGH + LOW) / 2), 19), SUM(MEAN(VOLUME,40), 19), 13))^5)))"
+    },
+    {
+      "name": "GTJA_ALPHA_057",
+      "category": "alpha191",
+      "expression": "SMA((CLOSE-TSMIN(LOW,9))/(TSMAX(HIGH,9)-TSMIN(LOW,9))*100,3,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_058",
+      "category": "alpha191",
+      "expression": "COUNT(CLOSE>DELAY(CLOSE,1),20)/20*100"
+    },
+    {
+      "name": "GTJA_ALPHA_059",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE=DELAY(CLOSE,1)?0:CLOSE-(CLOSE>DELAY(CLOSE,1)?MIN(LOW,DELAY(CLOSE,1)):MAX(HIGH,DELAY(CLOSE,1)))),20)"
+    },
+    {
+      "name": "GTJA_ALPHA_060",
+      "category": "alpha191",
+      "expression": "SUM(((CLOSE-LOW)-(HIGH-CLOSE))./(HIGH-LOW).*VOLUME,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_061",
+      "category": "alpha191",
+      "expression": "(MAX(RANK(DECAYLINEAR(DELTA(VWAP , 1), 12)), RANK(DECAYLINEAR(RANK(CORR((LOW),MEAN(VOLUME,80), 8)), 17))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_062",
+      "category": "alpha191",
+      "expression": "(-1 * CORR(HIGH, RANK(VOLUME), 5))"
+    },
+    {
+      "name": "GTJA_ALPHA_063",
+      "category": "alpha191",
+      "expression": "SMA(MAX(CLOSE-DELAY(CLOSE,1),0),6,1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),6,1)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_064",
+      "category": "alpha191",
+      "expression": "(MAX(RANK(DECAYLINEAR(CORR(RANK(VWAP), RANK(VOLUME), 4), 4)), RANK(DECAYLINEAR(MAX(CORR(RANK(CLOSE), RANK(MEAN(VOLUME,60)), 4), 13), 14))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_065",
+      "category": "alpha191",
+      "expression": "MEAN(CLOSE,6)/CLOSE"
+    },
+    {
+      "name": "GTJA_ALPHA_066",
+      "category": "alpha191",
+      "expression": "(CLOSE-MEAN(CLOSE,6))/MEAN(CLOSE,6)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_067",
+      "category": "alpha191",
+      "expression": "SMA(MAX(CLOSE-DELAY(CLOSE,1),0),24,1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),24,1)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_068",
+      "category": "alpha191",
+      "expression": "SMA(((HIGH+LOW)/2-(DELAY(HIGH,1)+DELAY(LOW,1))/2)*(HIGH-LOW)/VOLUME,15,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_069",
+      "category": "alpha191",
+      "expression": "(SUM(DTM,20)>SUM(DBM,20) ？(SUM(DTM,20)-SUM(DBM,20))/SUM(DTM,20)：(SUM(DTM,20)=SUM(DBM,20)？ 0：(SUM(DTM,20)-SUM(DBM,20))/SUM(DBM,20)))"
+    },
+    {
+      "name": "GTJA_ALPHA_070",
+      "category": "alpha191",
+      "expression": "STD(AMOUNT,6)"
+    },
+    {
+      "name": "GTJA_ALPHA_071",
+      "category": "alpha191",
+      "expression": "(CLOSE-MEAN(CLOSE,24))/MEAN(CLOSE,24)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_072",
+      "category": "alpha191",
+      "expression": "SMA((TSMAX(HIGH,6)-CLOSE)/(TSMAX(HIGH,6)-TSMIN(LOW,6))*100,15,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_073",
+      "category": "alpha191",
+      "expression": "((TSRANK(DECAYLINEAR(DECAYLINEAR(CORR((CLOSE), VOLUME, 10), 16), 4), 5) - RANK(DECAYLINEAR(CORR(VWAP , MEAN(VOLUME,30), 4),3))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_074",
+      "category": "alpha191",
+      "expression": "(RANK(CORR(SUM(((LOW * 0.35) + (VWAP * 0.65)), 20), SUM(MEAN(VOLUME,40), 20), 7)) + RANK(CORR(RANK(VWAP), RANK(VOLUME), 6)))"
+    },
+    {
+      "name": "GTJA_ALPHA_075",
+      "category": "alpha191",
+      "expression": "COUNT(CLOSE>OPEN & BANCHMARKINDEXCLOSE<BANCHMARKINDEXOPEN,50)/COUNT(BANCHMARKINDEXCLOSE<BANCHMARKINDEXOPEN,50)"
+    },
+    {
+      "name": "GTJA_ALPHA_076",
+      "category": "alpha191",
+      "expression": "STD(ABS((CLOSE/DELAY(CLOSE,1)-1))/VOLUME,20)/MEAN(ABS((CLOSE/DELAY(CLOSE,1)-1))/VOLUME,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_077",
+      "category": "alpha191",
+      "expression": "MIN(RANK(DECAYLINEAR(((((HIGH + LOW) / 2) + HIGH) - (VWAP + HIGH)), 20)), RANK(DECAYLINEAR(CORR(((HIGH + LOW) / 2), MEAN(VOLUME,40), 3), 6)))"
+    },
+    {
+      "name": "GTJA_ALPHA_078",
+      "category": "alpha191",
+      "expression": "((HIGH+LOW+CLOSE)/3-MA((HIGH+LOW+CLOSE)/3,12))/(0.015*MEAN(ABS(CLOSE-MEAN((HIGH+LOW+CLOSE)/3,12)),12))"
+    },
+    {
+      "name": "GTJA_ALPHA_079",
+      "category": "alpha191",
+      "expression": "SMA(MAX(CLOSE-DELAY(CLOSE,1),0),12,1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),12,1)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_080",
+      "category": "alpha191",
+      "expression": "(VOLUME-DELAY(VOLUME,5))/DELAY(VOLUME,5)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_081",
+      "category": "alpha191",
+      "expression": "SMA(VOLUME,21,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_082",
+      "category": "alpha191",
+      "expression": "SMA((TSMAX(HIGH,6)-CLOSE)/(TSMAX(HIGH,6)-TSMIN(LOW,6))*100,20,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_083",
+      "category": "alpha191",
+      "expression": "(-1 * RANK(COVIANCE(RANK(HIGH), RANK(VOLUME), 5)))"
+    },
+    {
+      "name": "GTJA_ALPHA_084",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE>DELAY(CLOSE,1)?VOLUME:(CLOSE<DELAY(CLOSE,1)?-VOLUME:0)),20)"
+    },
+    {
+      "name": "GTJA_ALPHA_085",
+      "category": "alpha191",
+      "expression": "(TSRANK((VOLUME / MEAN(VOLUME,20)), 20) * TSRANK((-1 * DELTA(CLOSE, 7)), 8))"
+    },
+    {
+      "name": "GTJA_ALPHA_086",
+      "category": "alpha191",
+      "expression": "((0.25 < (((DELAY(CLOSE, 20) - DELAY(CLOSE, 10)) / 10) - ((DELAY(CLOSE, 10) - CLOSE) / 10))) ? ( -1 * 1) : (((((DELAY(CLOSE, 20) - DELAY(CLOSE, 10)) / 10) - ((DELAY(CLOSE, 10) - CLOSE) / 10)) < 0) ? 1 : (( -1 * 1) * (CLOSE - DELAY(CLOSE, 1)))))"
+    },
+    {
+      "name": "GTJA_ALPHA_087",
+      "category": "alpha191",
+      "expression": "((RANK(DECAYLINEAR(DELTA(VWAP , 4), 7)) + TSRANK(DECAYLINEAR(((((LOW * 0.9) + (LOW * 0.1)) - VWAP) / (OPEN - ((HIGH + LOW) / 2))), 11), 7)) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_088",
+      "category": "alpha191",
+      "expression": "(CLOSE-DELAY(CLOSE,20))/DELAY(CLOSE,20)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_089",
+      "category": "alpha191",
+      "expression": "2*(SMA(CLOSE,13,2)-SMA(CLOSE,27,2)-SMA(SMA(CLOSE,13,2)-SMA(CLOSE,27,2),10,2))"
+    },
+    {
+      "name": "GTJA_ALPHA_090",
+      "category": "alpha191",
+      "expression": "( RANK(CORR(RANK(VWAP), RANK(VOLUME), 5)) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_091",
+      "category": "alpha191",
+      "expression": "((RANK((CLOSE - MAX(CLOSE, 5)))*RANK(CORR((MEAN(VOLUME,40)), LOW, 5))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_092",
+      "category": "alpha191",
+      "expression": "(MAX(RANK(DECAYLINEAR(DELTA(((CLOSE * 0.35) + (VWAP *0.65)), 2), 3)), TSRANK(DECAYLINEAR(ABS(CORR((MEAN(VOLUME,180)), CLOSE, 13)), 5), 15)) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_093",
+      "category": "alpha191",
+      "expression": "SUM((OPEN>=DELAY(OPEN,1)?0:MAX((OPEN-LOW),(OPEN-DELAY(OPEN,1)))),20)"
+    },
+    {
+      "name": "GTJA_ALPHA_094",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE>DELAY(CLOSE,1)?VOLUME:(CLOSE<DELAY(CLOSE,1)?-VOLUME:0)),30)"
+    },
+    {
+      "name": "GTJA_ALPHA_095",
+      "category": "alpha191",
+      "expression": "STD(AMOUNT,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_096",
+      "category": "alpha191",
+      "expression": "SMA(SMA((CLOSE-TSMIN(LOW,9))/(TSMAX(HIGH,9)-TSMIN(LOW,9))*100,3,1),3,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_097",
+      "category": "alpha191",
+      "expression": "STD(VOLUME,10)"
+    },
+    {
+      "name": "GTJA_ALPHA_098",
+      "category": "alpha191",
+      "expression": "((((DELTA((SUM(CLOSE, 100) / 100), 100) / DELAY(CLOSE, 100)) < 0.05) || ((DELTA((SUM(CLOSE, 100) / 100), 100) / DELAY(CLOSE, 100)) == 0.05)) ? (-1 * (CLOSE - TSMIN(CLOSE, 100))) : (-1 * DELTA(CLOSE, 3)))"
+    },
+    {
+      "name": "GTJA_ALPHA_099",
+      "category": "alpha191",
+      "expression": "(-1 * RANK(COVIANCE(RANK(CLOSE), RANK(VOLUME), 5)))"
+    },
+    {
+      "name": "GTJA_ALPHA_100",
+      "category": "alpha191",
+      "expression": "STD(VOLUME,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_101",
+      "category": "alpha191",
+      "expression": "((RANK(CORR(CLOSE, SUM(MEAN(VOLUME,30), 37), 15)) < RANK(CORR(RANK(((HIGH * 0.1) + (VWAP * 0.9))), RANK(VOLUME), 11))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_102",
+      "category": "alpha191",
+      "expression": "SMA(MAX(VOLUME-DELAY(VOLUME,1),0),6,1)/SMA(ABS(VOLUME-DELAY(VOLUME,1)),6,1)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_103",
+      "category": "alpha191",
+      "expression": "((20-LOWDAY(LOW,20))/20)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_104",
+      "category": "alpha191",
+      "expression": "(-1 * (DELTA(CORR(HIGH, VOLUME, 5), 5) * RANK(STD(CLOSE, 20))))"
+    },
+    {
+      "name": "GTJA_ALPHA_105",
+      "category": "alpha191",
+      "expression": "(-1 * CORR(RANK(OPEN), RANK(VOLUME), 10))"
+    },
+    {
+      "name": "GTJA_ALPHA_106",
+      "category": "alpha191",
+      "expression": "CLOSE-DELAY(CLOSE,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_107",
+      "category": "alpha191",
+      "expression": "(((-1 * RANK((OPEN - DELAY(HIGH, 1)))) * RANK((OPEN - DELAY(CLOSE, 1)))) * RANK((OPEN - DELAY(LOW, 1))))"
+    },
+    {
+      "name": "GTJA_ALPHA_108",
+      "category": "alpha191",
+      "expression": "((RANK((HIGH - MIN(HIGH, 2)))^RANK(CORR((VWAP), (MEAN(VOLUME,120)), 6))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_109",
+      "category": "alpha191",
+      "expression": "SMA(HIGH-LOW,10,2)/SMA(SMA(HIGH-LOW,10,2),10,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_110",
+      "category": "alpha191",
+      "expression": "SUM(MAX(0,HIGH-DELAY(CLOSE,1)),20)/SUM(MAX(0,DELAY(CLOSE,1)-LOW),20)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_111",
+      "category": "alpha191",
+      "expression": "SMA(VOL*((CLOSE-LOW)-(HIGH-CLOSE))/(HIGH-LOW),11,2)-SMA(VOL*((CLOSE-LOW)-(HIGH-CLOSE))/(HIGH-LOW),4,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_112",
+      "category": "alpha191",
+      "expression": "(SUM((CLOSE-DELAY(CLOSE,1)>0?CLOSE-DELAY(CLOSE,1):0),12)-SUM((CLOSE-DELAY(CLOSE,1)<0?ABS(CLOSE-DELAY(CLOSE,1)):0),12))/(SUM((CLOSE-DELAY(CLOSE,1)>0?CLOSE-DELAY(CLOSE,1):0),12)+SUM((CLOSE-DELAY(CLOSE,1)<0?ABS(CLOSE-DELAY(CLOSE,1)):0),12))*100"
+    },
+    {
+      "name": "GTJA_ALPHA_113",
+      "category": "alpha191",
+      "expression": "(-1 * ((RANK((SUM(DELAY(CLOSE, 5), 20) / 20)) * CORR(CLOSE, VOLUME, 2)) * RANK(CORR(SUM(CLOSE, 5), SUM(CLOSE, 20), 2))))"
+    },
+    {
+      "name": "GTJA_ALPHA_114",
+      "category": "alpha191",
+      "expression": "((RANK(DELAY(((HIGH - LOW) / (SUM(CLOSE, 5) / 5)), 2)) * RANK(RANK(VOLUME))) / (((HIGH - LOW) / (SUM(CLOSE, 5) / 5)) / (VWAP - CLOSE)))"
+    },
+    {
+      "name": "GTJA_ALPHA_115",
+      "category": "alpha191",
+      "expression": "(RANK(CORR(((HIGH * 0.9) + (CLOSE * 0.1)), MEAN(VOLUME,30), 10))^RANK(CORR(TSRANK(((HIGH + LOW) / 2), 4), TSRANK(VOLUME, 10), 7)))"
+    },
+    {
+      "name": "GTJA_ALPHA_116",
+      "category": "alpha191",
+      "expression": "REGBETA(CLOSE,SEQUENCE,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_117",
+      "category": "alpha191",
+      "expression": "((TSRANK(VOLUME, 32) * (1 - TSRANK(((CLOSE + HIGH) - LOW), 16))) * (1 - TSRANK(RET, 32)))"
+    },
+    {
+      "name": "GTJA_ALPHA_118",
+      "category": "alpha191",
+      "expression": "SUM(HIGH-OPEN,20)/SUM(OPEN-LOW,20)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_119",
+      "category": "alpha191",
+      "expression": "(RANK(DECAYLINEAR(CORR(VWAP , SUM(MEAN(VOLUME,5), 26), 5), 7)) - RANK(DECAYLINEAR(TSRANK(MIN(CORR(RANK(OPEN), RANK(MEAN(VOLUME,15)), 21), 9), 7), 8)))"
+    },
+    {
+      "name": "GTJA_ALPHA_120",
+      "category": "alpha191",
+      "expression": "(RANK((VWAP - CLOSE)) / RANK((VWAP + CLOSE)))"
+    },
+    {
+      "name": "GTJA_ALPHA_121",
+      "category": "alpha191",
+      "expression": "((RANK((VWAP - MIN(VWAP , 12)))^TSRANK(CORR(TSRANK(VWAP , 20), TSRANK(MEAN(VOLUME,60), 2), 18), 3)) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_122",
+      "category": "alpha191",
+      "expression": "(SMA(SMA(SMA(LOG(CLOSE),13,2),13,2),13,2)-DELAY(SMA(SMA(SMA(LOG(CLOSE),13,2),13,2),13,2),1))/DELAY(SMA(SMA(SMA(LOG(CLOSE),13,2),13,2),13,2),1)"
+    },
+    {
+      "name": "GTJA_ALPHA_123",
+      "category": "alpha191",
+      "expression": "((RANK(CORR(SUM(((HIGH + LOW) / 2), 20), SUM(MEAN(VOLUME,60), 20), 9)) < RANK(CORR(LOW, VOLUME, 6))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_124",
+      "category": "alpha191",
+      "expression": "(CLOSE - VWAP) / DECAYLINEAR(RANK(TSMAX(CLOSE, 30)),2)"
+    },
+    {
+      "name": "GTJA_ALPHA_125",
+      "category": "alpha191",
+      "expression": "(RANK(DECAYLINEAR(CORR((VWAP), MEAN(VOLUME,80),17), 20)) / RANK(DECAYLINEAR(DELTA(((CLOSE * 0.5) + (VWAP * 0.5)), 3), 16)))"
+    },
+    {
+      "name": "GTJA_ALPHA_126",
+      "category": "alpha191",
+      "expression": "(CLOSE+HIGH+LOW)/3"
+    },
+    {
+      "name": "GTJA_ALPHA_127",
+      "category": "alpha191",
+      "expression": "(MEAN((100*(CLOSE-MAX(CLOSE,12))/(MAX(CLOSE,12)))^2))^(1/2)"
+    },
+    {
+      "name": "GTJA_ALPHA_128",
+      "category": "alpha191",
+      "expression": "100-(100/(1+SUM(((HIGH+LOW+CLOSE)/3>DELAY((HIGH+LOW+CLOSE)/3,1)?(HIGH+LOW+CLOSE)/3*VOLUME:0),14)/SUM(((HIGH+LOW+CLOSE)/3<DELAY((HIGH+LOW+CLOSE)/3,1)?(HIGH+LOW+CLOSE)/3*VOLUME:0), 14)))"
+    },
+    {
+      "name": "GTJA_ALPHA_129",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE-DELAY(CLOSE,1)<0?ABS(CLOSE-DELAY(CLOSE,1)):0),12)"
+    },
+    {
+      "name": "GTJA_ALPHA_130",
+      "category": "alpha191",
+      "expression": "(RANK(DECAYLINEAR(CORR(((HIGH + LOW) / 2), MEAN(VOLUME,40), 9), 10)) / RANK(DECAYLINEAR(CORR(RANK(VWAP), RANK(VOLUME), 7),3)))"
+    },
+    {
+      "name": "GTJA_ALPHA_131",
+      "category": "alpha191",
+      "expression": "(RANK(DELAT(VWAP , 1))^TSRANK(CORR(CLOSE,MEAN(VOLUME,50), 18), 18))"
+    },
+    {
+      "name": "GTJA_ALPHA_132",
+      "category": "alpha191",
+      "expression": "MEAN(AMOUNT,20)"
+    },
+    {
+      "name": "GTJA_ALPHA_133",
+      "category": "alpha191",
+      "expression": "((20-HIGHDAY(HIGH,20))/20)*100-((20-LOWDAY(LOW,20))/20)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_134",
+      "category": "alpha191",
+      "expression": "(CLOSE-DELAY(CLOSE,12))/DELAY(CLOSE,12)*VOLUME"
+    },
+    {
+      "name": "GTJA_ALPHA_135",
+      "category": "alpha191",
+      "expression": "SMA(DELAY(CLOSE/DELAY(CLOSE,20),1),20,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_136",
+      "category": "alpha191",
+      "expression": "((-1 * RANK(DELTA(RET, 3))) * CORR(OPEN, VOLUME, 10))"
+    },
+    {
+      "name": "GTJA_ALPHA_137",
+      "category": "alpha191",
+      "expression": "16*(CLOSE-DELAY(CLOSE,1)+(CLOSE-OPEN)/2+DELAY(CLOSE,1)-DELAY(OPEN,1))/((ABS(HIGH-DELAY(CLOSE, 1))>ABS(LOW-DELAY(CLOSE,1)) & ABS(HIGH-DELAY(CLOSE,1))>ABS(HIGH-DELAY(LOW,1))?ABS(HIGH-DELAY(CLOSE,1))+ABS(LOW-DELAY(CLOSE,1))/2+ABS(DELAY(CLOSE,1)-DELAY(OPEN,1))/4:(ABS(LOW-DELAY(CLOSE,1))>ABS(HIGH-DELAY(LOW,1)) & ABS(LOW-DELAY(CLOSE,1))>ABS(HIGH-DELAY(CLOSE,1))?ABS(LOW-DELAY(CLOSE,1))+ABS(HIGH-DELAY(CLOSE,1))/2+ABS(DELAY(CLOSE,1)-DELAY(OPEN,1))/4:ABS(HIGH-DELAY(LOW,1))+ABS(DELAY(CLOSE,1)-DELAY(OPEN,1))/4)))*MAX(ABS(HIGH-DELAY(CLOSE,1)),ABS(LOW-DELAY(CLOSE,1)))"
+    },
+    {
+      "name": "GTJA_ALPHA_138",
+      "category": "alpha191",
+      "expression": "((RANK(DECAYLINEAR(DELTA((((LOW * 0.7) + (VWAP *0.3))), 3), 20)) - TSRANK(DECAYLINEAR(TSRANK(CORR(TSRANK(LOW, 8), TSRANK(MEAN(VOLUME,60), 17), 5), 19), 16), 7)) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_139",
+      "category": "alpha191",
+      "expression": "(-1 * CORR(OPEN, VOLUME, 10))"
+    },
+    {
+      "name": "GTJA_ALPHA_140",
+      "category": "alpha191",
+      "expression": "MIN(RANK(DECAYLINEAR(((RANK(OPEN) + RANK(LOW)) - (RANK(HIGH) + RANK(CLOSE))), 8)), TSRANK(DECAYLINEAR(CORR(TSRANK(CLOSE, 8), TSRANK(MEAN(VOLUME,60), 20), 8), 7), 3))"
+    },
+    {
+      "name": "GTJA_ALPHA_141",
+      "category": "alpha191",
+      "expression": "(RANK(CORR(RANK(HIGH), RANK(MEAN(VOLUME,15)), 9))* -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_142",
+      "category": "alpha191",
+      "expression": "(((-1 * RANK(TSRANK(CLOSE, 10))) * RANK(DELTA(DELTA(CLOSE, 1), 1))) * RANK(TSRANK((VOLUME /MEAN(VOLUME,20)), 5)))"
+    },
+    {
+      "name": "GTJA_ALPHA_143",
+      "category": "alpha191",
+      "expression": "CLOSE>DELAY(CLOSE,1)?(CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1)*SELF:SELF"
+    },
+    {
+      "name": "GTJA_ALPHA_144",
+      "category": "alpha191",
+      "expression": "SUMIF(ABS(CLOSE/DELAY(CLOSE,1)-1)/AMOUNT,20,CLOSE<DELAY(CLOSE,1))/COUNT(CLOSE<DELAY(CLOSE, 1),20)"
+    },
+    {
+      "name": "GTJA_ALPHA_145",
+      "category": "alpha191",
+      "expression": "(MEAN(VOLUME,9)-MEAN(VOLUME,26))/MEAN(VOLUME,12)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_146",
+      "category": "alpha191",
+      "expression": "MEAN((CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1)-SMA((CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1),61,2),20)*(( CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1)-SMA((CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1),61,2))/SMA(((CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1)-((CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1)-SMA((CLOSE-DELAY(CLOSE, 1))/DELAY(CLOSE,1),61,2)))^2,60);"
+    },
+    {
+      "name": "GTJA_ALPHA_147",
+      "category": "alpha191",
+      "expression": "REGBETA(MEAN(CLOSE,12),SEQUENCE(12))"
+    },
+    {
+      "name": "GTJA_ALPHA_148",
+      "category": "alpha191",
+      "expression": "((RANK(CORR((OPEN), SUM(MEAN(VOLUME,60), 9), 6)) < RANK((OPEN - TSMIN(OPEN, 14)))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_149",
+      "category": "alpha191",
+      "expression": "REGBETA(FILTER(CLOSE/DELAY(CLOSE,1)-1,BANCHMARKINDEXCLOSE<DELAY(BANCHMARKINDEXCLOSE,1) ),FILTER(BANCHMARKINDEXCLOSE/DELAY(BANCHMARKINDEXCLOSE,1)-1,BANCHMARKINDEXCLOSE<DELAY(BANCHMARKINDEXCLOSE,1)),252)"
+    },
+    {
+      "name": "GTJA_ALPHA_150",
+      "category": "alpha191",
+      "expression": "(CLOSE+HIGH+LOW)/3*VOLUME"
+    },
+    {
+      "name": "GTJA_ALPHA_151",
+      "category": "alpha191",
+      "expression": "SMA(CLOSE-DELAY(CLOSE,20),20,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_152",
+      "category": "alpha191",
+      "expression": "SMA(MEAN(DELAY(SMA(DELAY(CLOSE/DELAY(CLOSE,9),1),9,1),1),12)-MEAN(DELAY(SMA(DELAY(CLOSE/DELAY (CLOSE,9),1),9,1),1),26),9,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_153",
+      "category": "alpha191",
+      "expression": "(MEAN(CLOSE,3)+MEAN(CLOSE,6)+MEAN(CLOSE,12)+MEAN(CLOSE,24))/4"
+    },
+    {
+      "name": "GTJA_ALPHA_154",
+      "category": "alpha191",
+      "expression": "(((VWAP - MIN(VWAP , 16))) < (CORR(VWAP , MEAN(VOLUME,180), 18)))"
+    },
+    {
+      "name": "GTJA_ALPHA_155",
+      "category": "alpha191",
+      "expression": "SMA(VOLUME,13,2)-SMA(VOLUME,27,2)-SMA(SMA(VOLUME,13,2)-SMA(VOLUME,27,2),10,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_156",
+      "category": "alpha191",
+      "expression": "(MAX(RANK(DECAYLINEAR(DELTA(VWAP , 5), 3)), RANK(DECAYLINEAR(((DELTA(((OPEN * 0.15) + (LOW *0.85)), 2) / ((OPEN * 0.15) + (LOW * 0.85))) * -1), 3))) * -1)"
+    },
+    {
+      "name": "GTJA_ALPHA_157",
+      "category": "alpha191",
+      "expression": "(MIN(PROD(RANK(RANK(LOG(SUM(TSMIN(RANK(RANK((-1 * RANK(DELTA((CLOSE - 1), 5))))), 2), 1)))), 1), 5) + TSRANK(DELAY((-1 * RET), 6), 5))"
+    },
+    {
+      "name": "GTJA_ALPHA_158",
+      "category": "alpha191",
+      "expression": "((HIGH-SMA(CLOSE,15,2))-(LOW-SMA(CLOSE,15,2)))/CLOSE"
+    },
+    {
+      "name": "GTJA_ALPHA_159",
+      "category": "alpha191",
+      "expression": "((CLOSE-SUM(MIN(LOW,DELAY(CLOSE,1)),6))/SUM(MAX(HGIH,DELAY(CLOSE,1))-MIN(LOW,DELAY(CLOSE,1)),6) *12*24+(CLOSE-SUM(MIN(LOW,DELAY(CLOSE,1)),12))/SUM(MAX(HGIH,DELAY(CLOSE,1))-MIN(LOW,DELAY(CLOSE,1)),12)*6*24+(CLOSE-SUM(MIN(LOW,DELAY(CLOSE,1)),24))/SUM(MAX(HGIH,DELAY(CLOSE,1))-MIN(LOW,DELAY(CLOSE,1)),24)*6*24)*100/(6*12+6*24+12*24)"
+    },
+    {
+      "name": "GTJA_ALPHA_160",
+      "category": "alpha191",
+      "expression": "SMA((CLOSE<=DELAY(CLOSE,1)?STD(CLOSE,20):0),20,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_161",
+      "category": "alpha191",
+      "expression": "MEAN(MAX(MAX((HIGH-LOW),ABS(DELAY(CLOSE,1)-HIGH)),ABS(DELAY(CLOSE,1)-LOW)),12)"
+    },
+    {
+      "name": "GTJA_ALPHA_162",
+      "category": "alpha191",
+      "expression": "(SMA(MAX(CLOSE-DELAY(CLOSE,1),0),12,1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),12,1)*100-MIN(SMA(MAX(CLOSE-DELAY(CLOSE,1),0),12,1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),12,1)*100,12))/(MAX(SMA(MAX(CLOSE-DELAY(CLOSE,1),0),12,1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),12,1)*100,12)-MIN(SMA(MAX(CLOSE-DELAY(CLOSE,1),0),12, 1)/SMA(ABS(CLOSE-DELAY(CLOSE,1)),12,1)*100,12))"
+    },
+    {
+      "name": "GTJA_ALPHA_163",
+      "category": "alpha191",
+      "expression": "RANK(((((-1 * RET) * MEAN(VOLUME,20)) * VWAP) * (HIGH - CLOSE)))"
+    },
+    {
+      "name": "GTJA_ALPHA_164",
+      "category": "alpha191",
+      "expression": "SMA((((CLOSE>DELAY(CLOSE,1))?1/(CLOSE-DELAY(CLOSE,1)):1)-MIN(((CLOSE>DELAY(CLOSE,1))?1/(CLOSE-DELAY(CLOSE,1)):1),12))/(HIGH-LOW)*100,13,2)"
+    },
+    {
+      "name": "GTJA_ALPHA_165",
+      "category": "alpha191",
+      "expression": "MAX(SUMAC(CLOSE-MEAN(CLOSE,48)))-MIN(SUMAC(CLOSE-MEAN(CLOSE,48)))/STD(CLOSE,48)"
+    },
+    {
+      "name": "GTJA_ALPHA_166",
+      "category": "alpha191",
+      "expression": "-20* （ 20-1 ） ^1.5*SUM(CLOSE/DELAY(CLOSE,1)-1-MEAN(CLOSE/DELAY(CLOSE,1)-1,20),20)/((20-1)*(20-2)(SUM((CLOSE/DELAY(CLOSE,1),20)^2,20))^1.5)"
+    },
+    {
+      "name": "GTJA_ALPHA_167",
+      "category": "alpha191",
+      "expression": "SUM((CLOSE-DELAY(CLOSE,1)>0?CLOSE-DELAY(CLOSE,1):0),12)"
+    },
+    {
+      "name": "GTJA_ALPHA_168",
+      "category": "alpha191",
+      "expression": "(-1*VOLUME/MEAN(VOLUME,20))"
+    },
+    {
+      "name": "GTJA_ALPHA_169",
+      "category": "alpha191",
+      "expression": "SMA(MEAN(DELAY(SMA(CLOSE-DELAY(CLOSE,1),9,1),1),12)-MEAN(DELAY(SMA(CLOSE-DELAY(CLOSE,1),9,1),1), 26),10,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_170",
+      "category": "alpha191",
+      "expression": "((((RANK((1 / CLOSE)) * VOLUME) / MEAN(VOLUME,20)) * ((HIGH * RANK((HIGH - CLOSE))) / (SUM(HIGH, 5) / 5))) - RANK((VWAP - DELAY(VWAP , 5))))"
+    },
+    {
+      "name": "GTJA_ALPHA_171",
+      "category": "alpha191",
+      "expression": "((-1 * ((LOW - CLOSE) * (OPEN^5))) / ((CLOSE - HIGH) * (CLOSE^5)))"
+    },
+    {
+      "name": "GTJA_ALPHA_172",
+      "category": "alpha191",
+      "expression": "MEAN(ABS(SUM((LD>0 & LD>HD)?LD:0,14)*100/ SUM(TR,14)-SUM((HD>0 & HD>LD)?HD:0,14)*100/SUM(TR,14))/(SUM((LD>0 & LD>HD)?LD:0,14)*100/ SUM(TR,14)+SUM((HD>0 & HD>LD)?HD:0,14)*100/SUM(TR,14))*100,6)"
+    },
+    {
+      "name": "GTJA_ALPHA_173",
+      "category": "alpha191",
+      "expression": "3*SMA(CLOSE,13,2)-2*SMA(SMA(CLOSE,13,2),13,2)+SMA(SMA(SMA(LOG(CLOSE),13,2),13,2),13,2);"
+    },
+    {
+      "name": "GTJA_ALPHA_174",
+      "category": "alpha191",
+      "expression": "SMA((CLOSE>DELAY(CLOSE,1)?STD(CLOSE,20):0),20,1)"
+    },
+    {
+      "name": "GTJA_ALPHA_175",
+      "category": "alpha191",
+      "expression": "MEAN(MAX(MAX((HIGH-LOW),ABS(DELAY(CLOSE,1)-HIGH)),ABS(DELAY(CLOSE,1)-LOW)),6)"
+    },
+    {
+      "name": "GTJA_ALPHA_176",
+      "category": "alpha191",
+      "expression": "CORR(RANK(((CLOSE - TSMIN(LOW, 12)) / (TSMAX(HIGH, 12) - TSMIN(LOW,12)))), RANK(VOLUME), 6)"
+    },
+    {
+      "name": "GTJA_ALPHA_177",
+      "category": "alpha191",
+      "expression": "((20-HIGHDAY(HIGH,20))/20)*100"
+    },
+    {
+      "name": "GTJA_ALPHA_178",
+      "category": "alpha191",
+      "expression": "(CLOSE-DELAY(CLOSE,1))/DELAY(CLOSE,1)*VOLUME"
+    },
+    {
+      "name": "GTJA_ALPHA_179",
+      "category": "alpha191",
+      "expression": "(RANK(CORR(VWAP , VOLUME, 4)) *RANK(CORR(RANK(LOW), RANK(MEAN(VOLUME,50)), 12)))"
+    },
+    {
+      "name": "GTJA_ALPHA_180",
+      "category": "alpha191",
+      "expression": "((MEAN(VOLUME,20) < VOLUME) ? ((-1 * TSRANK(ABS(DELTA(CLOSE, 7)), 60)) * SIGN(DELTA(CLOSE, 7)) : ( -1 * VOLUME)))"
+    },
+    {
+      "name": "GTJA_ALPHA_181",
+      "category": "alpha191",
+      "expression": "SUM(((CLOSE/DELAY(CLOSE,1)-1)-MEAN((CLOSE/DELAY(CLOSE,1)-1),20))-(BANCHMARKINDEXCLOSE-MEAN(BANCHMARKINDEXCLOSE,20))^2,20)/SUM((BANCHMARKINDEXCLOSE-MEAN(BANCHMARKINDEXCLOSE,20))^3)"
+    },
+    {
+      "name": "GTJA_ALPHA_182",
+      "category": "alpha191",
+      "expression": "COUNT((CLOSE>OPEN & BANCHMARKINDEXCLOSE>BANCHMARKINDEXOPEN)OR(CLOSE<OPEN & BANCHMARKINDEXCLOSE<BANCHMARKINDEXOPEN),20)/20"
+    },
+    {
+      "name": "GTJA_ALPHA_183",
+      "category": "alpha191",
+      "expression": "MAX(SUMAC(CLOSE-MEAN(CLOSE,24)))-MIN(SUMAC(CLOSE-MEAN(CLOSE,24)))/STD(CLOSE,24)"
+    },
+    {
+      "name": "GTJA_ALPHA_184",
+      "category": "alpha191",
+      "expression": "(RANK(CORR(DELAY((OPEN - CLOSE), 1), CLOSE, 200)) + RANK((OPEN - CLOSE)))"
+    },
+    {
+      "name": "GTJA_ALPHA_185",
+      "category": "alpha191",
+      "expression": "RANK((-1 * ((1 - (OPEN / CLOSE))^2)))"
+    },
+    {
+      "name": "GTJA_ALPHA_186",
+      "category": "alpha191",
+      "expression": "(MEAN(ABS(SUM((LD>0 & LD>HD)?LD:0,14)*100/ SUM(TR,14)-SUM((HD>0 & HD>LD)?HD:0,14)*100/SUM(TR,14))/(SUM((LD>0 & LD>HD)?LD:0,14)*100/ SUM(TR,14)+SUM((HD>0 & HD>LD)?HD:0,14)*100/SUM(TR,14))*100,6)+DELAY(MEAN(ABS(SUM((LD>0 & LD>HD)?LD:0,14)*100/SUM(TR,14)-SUM((HD>0 & HD>LD)?HD:0,14)*100/ SUM(TR,14))/(SUM((LD>0 & LD>HD)?LD:0,14)*100/SUM(TR,14)+SUM((HD>0 & HD>LD)?HD:0,14)*100/SUM(TR,14))*100,6),6))/2"
+    },
+    {
+      "name": "GTJA_ALPHA_187",
+      "category": "alpha191",
+      "expression": "SUM((OPEN<=DELAY(OPEN,1)?0:MAX((HIGH-OPEN),(OPEN-DELAY(OPEN,1)))),20)"
+    },
+    {
+      "name": "GTJA_ALPHA_188",
+      "category": "alpha191",
+      "expression": "((HIGH-LOW–SMA(HIGH-LOW,11,2))/SMA(HIGH-LOW,11,2))*100"
+    },
+    {
+      "name": "GTJA_ALPHA_189",
+      "category": "alpha191",
+      "expression": "MEAN(ABS(CLOSE-MEAN(CLOSE,6)),6)"
+    },
+    {
+      "name": "GTJA_ALPHA_190",
+      "category": "alpha191",
+      "expression": "LOG((COUNT(CLOSE/DELAY(CLOSE)-1>((CLOSE/DELAY(CLOSE,19))^(1/20)-1),20)-1)*(SUMIF(((CLOSE/DELAY(CLOSE)-1-(CLOSE/DELAY(CLOSE,19))^(1/20)-1))^2,20,CLOSE/DELAY(CLOSE)-1<(CLOSE/DELAY(CLOSE,19))^(1/20)- 1))/((COUNT((CLOSE/DELAY(CLOSE)-1<(CLOSE/DELAY(CLOSE,19))^(1/20)-1),20))*(SUMIF((CLOSE/DELAY(CLOSE)-1-((CLOSE/DELAY(CLOSE,19))^(1/20)-1))^2,20,CLOSE/DELAY(CLOSE)-1>(CLOSE/DELAY(CLOSE,19))^(1/20)-1))) )"
+    },
+    {
+      "name": "GTJA_ALPHA_191",
+      "category": "alpha191",
+      "expression": "((CORR(MEAN(VOLUME,20), LOW, 5) + ((HIGH + LOW) / 2)) - CLOSE)"
+    }
+  ]
+}
