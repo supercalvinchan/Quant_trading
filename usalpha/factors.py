@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 import json
 from pathlib import Path
 import re
@@ -27,6 +28,20 @@ class FactorSpec:
 class FactorSet:
     features: pd.DataFrame
     stats: dict[str, Any]
+
+
+@lru_cache(maxsize=8)
+def load_alpha526_catalog(alpha526_path: str) -> list[dict[str, Any]]:
+    specs = parse_alpha526_specs(Path(alpha526_path))
+    return [
+        {
+            "number": idx + 1,
+            "name": spec.name,
+            "category": spec.category,
+            "expression": spec.expression,
+        }
+        for idx, spec in enumerate(specs)
+    ]
 
 
 # -------------------------
@@ -1192,3 +1207,30 @@ def compute_526_factors(
         "feature_shape": [int(features.shape[0]), int(features.shape[1])],
     }
     return FactorSet(features=features, stats=stats)
+
+
+def compute_single_alpha_factor(
+    panel: pd.DataFrame,
+    benchmark_df: pd.DataFrame,
+    *,
+    alpha526_path: Path,
+    factor_number: int,
+) -> tuple[FactorSpec, pd.DataFrame]:
+    specs = parse_alpha526_specs(alpha526_path)
+    if int(factor_number) < 1 or int(factor_number) > len(specs):
+        raise ValueError(f"factor_number must be in [1, {len(specs)}]")
+    spec = specs[int(factor_number) - 1]
+    raw_frames = _build_raw_frames(panel)
+    if spec.category == "base":
+        wide = _compute_base_wide(panel, [spec]).get(spec.name)
+    elif spec.category == "alpha101":
+        wide = _compute_alpha101_wide(raw_frames, [spec]).get(spec.name)
+    elif spec.category == "alpha191":
+        if benchmark_df is None or benchmark_df.empty:
+            raise ValueError("alpha191 factor requires benchmark data")
+        wide = _compute_alpha191_wide(raw_frames, benchmark_df, [spec]).get(spec.name)
+    else:
+        raise ValueError(f"unsupported factor category: {spec.category}")
+    if wide is None:
+        raise ValueError(f"failed to compute factor {spec.name}")
+    return spec, wide.sort_index()

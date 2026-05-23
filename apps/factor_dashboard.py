@@ -4,6 +4,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 from pathlib import Path
+import sys
 import socket
 from urllib.parse import parse_qs, urlparse
 import signal
@@ -17,9 +18,28 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from usalpha.config import USAlphaConfig
 from usalpha.dashboard_service import EvolutionUIConfig, run_dashboard_workflow, run_dashboard_workflow_with_bundle
-from usalpha.data import MarketDataBundle
+from usalpha.data import MarketDataBundle, fetch_us_market_data, resolve_tickers_limited
+from usalpha.market_db import (
+    load_symbol_latest_bar_dates,
+    load_symbol_latest_valuation_dates,
+    load_daily_bars,
+    load_symbol_master,
+    load_symbols_missing_bars,
+    market_db_status,
+    upsert_daily_bars,
+    upsert_symbol_master,
+)
+from usalpha.strategies.alpha526_number_rank import get_alpha526_factor_meta
+from usalpha.strategies.small_cap_timing import get_total_value_history_cached, refresh_total_value_history
+from usalpha.strategies import get_strategy, list_strategy_metadata
+from usalpha.strategy_backtest import build_data_by_symbol_from_bundle, run_strategy_backtest
+from usalpha.trading_methods import list_trading_method_metadata
 
 from pandas.tseries.offsets import BDay
 
@@ -37,15 +57,41 @@ def _next_bday_date():
 def _effective_cn_daily_end(end: str | pd.Timestamp) -> pd.Timestamp:
     """Use the latest completed CN trading day for daily bars.
 
-    If the requested end date is today or in the future, daily bar data is usually
-    only complete through the previous business day, so avoid forcing a full-market
-    refresh for a date that does not exist yet.
+    For A-share daily bars:
+    - if the requested date is in the future, use the latest completed trading day
+    - if the requested date is today, use today after market close and previous
+      business day before market close
     """
     requested = pd.Timestamp(end).normalize()
-    today = pd.Timestamp.now().normalize()
-    if requested >= today:
-        return pd.Timestamp(today - BDay(1)).normalize()
+    now = pd.Timestamp.now()
+    today = now.normalize()
+    if requested > today:
+        if now.weekday() >= 5 or now.hour < 15:
+            return pd.Timestamp(today - BDay(1)).normalize()
+        return today
+    if requested == today:
+        if now.weekday() >= 5 or now.hour < 15:
+            return pd.Timestamp(today - BDay(1)).normalize()
+        return today
     return requested
+
+
+def _cn_snapshot_trade_date(now: pd.Timestamp | None = None) -> pd.Timestamp:
+    ts = pd.Timestamp.now() if now is None else pd.Timestamp(now)
+    ts = ts.tz_localize(None) if getattr(ts, "tzinfo", None) is not None else ts
+    today = ts.normalize()
+    # A-share daily bars are typically considered complete only after market close.
+    # Before 15:00 local time, use the previous business day to avoid stamping
+    # an intraday snapshot as a completed daily bar.
+    if ts.weekday() >= 5 or (ts.hour < 15):
+        return pd.Timestamp(today - BDay(1)).normalize()
+    return today
+
+
+def _cn_incremental_update_start(end: str | pd.Timestamp, lookback_bdays: int = 10) -> str:
+    end_ts = _effective_cn_daily_end(end)
+    start_ts = pd.Timestamp(end_ts - BDay(max(int(lookback_bdays), 1))).normalize()
+    return start_ts.date().isoformat()
 
 try:
     import plotly.express as px
@@ -71,11 +117,6 @@ try:
     import akshare as ak
 except Exception:  # pylint: disable=broad-except
     ak = None
-
-try:
-    from mootdx.quotes import Quotes
-except Exception:  # pylint: disable=broad-except
-    Quotes = None
 
 try:
     import requests
@@ -121,7 +162,28 @@ CN_AKSHARE_RETRY_SLEEP_SECONDS = 0.8
 CN_AKSHARE_NETWORK_TIMEOUT_SECONDS = 20
 CN_INCREMENTAL_BACKFILL_DAYS = 30
 _REQUESTS_TIMEOUT_PATCHED = False
-_MOOTDX_CLIENT = None
+
+CN_BACKTEST_BENCHMARK_OPTIONS = {
+    "000001": "上证指数 000001",
+    "399001": "深证成指 399001",
+    "399006": "创业板指 399006",
+    "000300": "沪深300 000300",
+    "000905": "中证500 000905",
+    "000852": "中证1000 000852",
+    "CUSTOM": "自定义指数代码",
+}
+
+BACKTEST_FACTOR_TEMPLATES = {
+    "5日动量": "($close / Ref($close, 5)) - 1",
+    "20日动量": "($close / Ref($close, 20)) - 1",
+    "均线偏离": "($close / Mean($close, 20)) - 1",
+    "VWAP偏离": "($close / $vwap) - 1",
+    "量价共振": "(($close / Ref($close, 5)) - 1) * ($volume / Mean($volume, 10))",
+    "回撤反转": "(Min($low, 20) / $close) - 1",
+    "趋势斜率": "Slope($close, 10) / $close",
+    "趋势质量": "Rsquare($close, 20) * (Slope($close, 20) / $close)",
+    "自定义": "",
+}
 
 
 def _browser_auto_shutdown_enabled() -> bool:
@@ -488,7 +550,10 @@ def _read_cn_cached_history(symbol: str) -> pd.DataFrame:
 
 def _write_cn_cached_history(symbol: str, frame: pd.DataFrame) -> None:
     compact = _compact_cn_history_for_cache(frame)
-    compact.to_parquet(_cn_cache_path(symbol), compression="zstd", index=True)
+    target = _cn_cache_path(symbol)
+    tmp = target.with_suffix(target.suffix + f".tmp.{os.getpid()}.{int(time.time() * 1000)}")
+    compact.to_parquet(tmp, compression="zstd", index=True)
+    tmp.replace(target)
 
 
 def _prefix_cn_symbol(symbol: str) -> str:
@@ -499,68 +564,9 @@ def _prefix_cn_symbol(symbol: str) -> str:
         return f"sh{s}"
     if s.startswith(("0", "3")):
         return f"sz{s}"
-    if s.startswith(("4", "8")):
+    if s.startswith(("4", "8", "9")):
         return f"bj{s}"
     return s
-
-
-def _get_mootdx_quotes_client():
-    global _MOOTDX_CLIENT
-    if Quotes is None:
-        raise RuntimeError("未安装 mootdx，无法使用通达信行情源；请先执行 pip install mootdx")
-    if _MOOTDX_CLIENT is None:
-        _MOOTDX_CLIENT = Quotes.factory(market="std")
-    return _MOOTDX_CLIENT
-
-
-def _normalize_mootdx_history(raw: pd.DataFrame) -> pd.DataFrame:
-    if raw is None or raw.empty:
-        return _empty_cn_history()
-    out = raw.copy()
-    if "datetime" not in out.columns:
-        raise ValueError("mootdx bars missing datetime column")
-    out["datetime"] = pd.to_datetime(out["datetime"], errors="coerce").dt.tz_localize(None)
-    out = out.dropna(subset=["datetime"]).set_index("datetime").sort_index()
-    if "volume" not in out.columns and "vol" in out.columns:
-        out["volume"] = out["vol"]
-    required = ["open", "high", "low", "close", "volume"]
-    missing = [col for col in required if col not in out.columns]
-    if missing:
-        raise ValueError(f"mootdx bars missing columns: {missing}")
-    out = out[required].copy()
-    return _with_usalpha_fields(out)
-
-
-def _fetch_cn_stock_history_mootdx(symbol: str, start: str, end: str) -> pd.DataFrame:
-    client = _get_mootdx_quotes_client()
-    start_ts = pd.Timestamp(start).normalize()
-    end_ts = pd.Timestamp(end).normalize()
-
-    frames: list[pd.DataFrame] = []
-    seen_ranges: set[tuple[pd.Timestamp, pd.Timestamp]] = set()
-    for start_offset in range(0, 6400, 800):
-        raw = client.bars(symbol=_normalize_cn_symbol(symbol).zfill(6), frequency=9, start=start_offset, offset=800)
-        frame = _normalize_mootdx_history(raw)
-        if frame.empty:
-            break
-        frame = frame.loc[(frame.index >= start_ts) & (frame.index <= end_ts)].copy()
-        if not frame.empty:
-            key = (pd.Timestamp(frame.index.min()), pd.Timestamp(frame.index.max()))
-            if key in seen_ranges:
-                break
-            seen_ranges.add(key)
-            frames.append(frame)
-
-        raw_index = pd.to_datetime(raw["datetime"], errors="coerce").dropna()
-        if raw_index.empty or raw_index.min().normalize() <= start_ts:
-            break
-
-    if not frames:
-        return _empty_cn_history()
-
-    merged = pd.concat(frames).sort_index()
-    merged = merged[~merged.index.duplicated(keep="last")]
-    return merged.loc[(merged.index >= start_ts) & (merged.index <= end_ts)].copy()
 
 
 def _df_item_value_to_dict(df: pd.DataFrame) -> dict[str, Any]:
@@ -608,6 +614,9 @@ def _is_nonempty_df(value: Any) -> bool:
 @st.cache_data(ttl=24 * 3600, show_spinner=False)
 def _fetch_cn_all_a_symbols_cached() -> pd.DataFrame:
     cols = ["symbol", "name"]
+    db_master = load_symbol_master()
+    if not db_master.empty:
+        return db_master[["symbol", "name"]].sort_values("symbol").reset_index(drop=True)
     if ak is None:
         return pd.DataFrame(columns=cols)
 
@@ -624,6 +633,7 @@ def _fetch_cn_all_a_symbols_cached() -> pd.DataFrame:
     out["symbol"] = raw[code_col].astype(str).map(lambda x: _normalize_cn_symbol(x).zfill(6))
     out["name"] = raw[name_col].astype(str) if name_col is not None else ""
     out = out[out["symbol"].str.match(r"^\d{6}$", na=False)].drop_duplicates("symbol")
+    upsert_symbol_master(out[["symbol", "name"]])
     return out.sort_values("symbol").reset_index(drop=True)
 
 
@@ -642,11 +652,415 @@ def _cn_cache_status() -> dict[str, Any]:
     sizes = [p.stat().st_size for p in files]
     total_size = int(sum(sizes))
     avg_size = float(np.mean(sizes)) if sizes else 0.0
+    db_status = market_db_status()
     return {
         "file_count": len(files),
         "total_size": total_size,
         "avg_size": avg_size,
         "cache_dir": str(cache_dir),
+        "db_exists": bool(db_status.get("exists")),
+        "db_path": str(db_status.get("db_path", "")),
+        "db_size_bytes": int(db_status.get("size_bytes", 0)),
+        "db_symbols": int(db_status.get("symbols", 0)),
+        "db_bars": int(db_status.get("bars", 0)),
+        "db_valuation_rows": int(db_status.get("valuation_rows", 0)),
+        "db_valuation_symbols": int(db_status.get("valuation_symbols", 0)),
+    }
+
+
+def _cn_valuation_cache_dir() -> Path:
+    path = Path(__file__).resolve().parents[1] / ".cache" / "cn_valuation_total_value"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _cn_symbol_name_cache_path() -> Path:
+    return Path(__file__).resolve().parents[1] / ".cache" / "cn_symbol_names.parquet"
+
+
+def _read_cn_cached_total_value_local(symbol: str) -> pd.Series:
+    path = _cn_valuation_cache_dir() / f"{_normalize_cn_symbol(symbol).zfill(6)}.parquet"
+    if not path.exists():
+        return pd.Series(dtype=float)
+    try:
+        frame = pd.read_parquet(path)
+    except Exception:
+        return pd.Series(dtype=float)
+    if frame.empty or "total_value_yi" not in frame.columns:
+        return pd.Series(dtype=float)
+    frame.index = pd.to_datetime(frame.index).tz_localize(None)
+    out = pd.to_numeric(frame["total_value_yi"], errors="coerce").dropna()
+    out.index = pd.to_datetime(out.index).tz_localize(None)
+    return out.sort_index()
+
+
+def _read_cn_cached_history_max_date(symbol: str) -> str:
+    path = _cn_cache_path(symbol)
+    if not path.exists():
+        return ""
+    try:
+        frame = pd.read_parquet(path, columns=[])
+        idx = pd.to_datetime(frame.index).tz_localize(None)
+        if len(idx) == 0:
+            return ""
+        return pd.Timestamp(idx.max()).normalize().strftime("%Y-%m-%d")
+    except Exception:
+        return ""
+
+
+def _load_cn_db_max_dates(symbols: list[str]) -> dict[str, str]:
+    normalized = list(dict.fromkeys([_normalize_cn_symbol(x).zfill(6) for x in symbols if str(x).strip()]))
+    if not normalized:
+        return {}
+    from usalpha.market_db import connect_market_db, get_market_db_path
+
+    if not get_market_db_path().exists():
+        return {}
+    placeholders = ", ".join(["?"] * len(normalized))
+    sql = (
+        "SELECT symbol, MAX(trade_date) AS max_date "
+        f"FROM cn_daily_bars WHERE symbol IN ({placeholders}) GROUP BY symbol"
+    )
+    with connect_market_db(read_only=True) as conn:
+        rows = pd.read_sql_query(sql, conn, params=normalized)
+    if rows.empty:
+        return {}
+    return {
+        str(row["symbol"]): (str(row["max_date"]) if pd.notna(row["max_date"]) else "")
+        for _, row in rows.iterrows()
+    }
+
+
+def _pick_symbols_with_local_bar_newer_than_db(symbols: list[str]) -> list[str]:
+    normalized = list(dict.fromkeys([_normalize_cn_symbol(x).zfill(6) for x in symbols if str(x).strip()]))
+    db_max_dates = _load_cn_db_max_dates(normalized)
+    result: list[str] = []
+    for symbol in normalized:
+        local_max = _read_cn_cached_history_max_date(symbol)
+        db_max = db_max_dates.get(symbol, "")
+        if local_max and local_max > db_max:
+            result.append(symbol)
+    return result
+
+
+def _normalize_cn_spot_snapshot(raw: pd.DataFrame) -> pd.DataFrame:
+    if raw is None or raw.empty:
+        return pd.DataFrame(columns=["symbol", "name", "close", "volume", "trade_date"])
+    out = raw.copy()
+    normalized_cols = {col: str(col).strip().lower() for col in out.columns}
+    out = out.rename(columns=normalized_cols)
+
+    def _pick_col(candidates: list[str]) -> str | None:
+        for col in out.columns:
+            key = str(col).strip().lower()
+            if key in candidates:
+                return col
+        return None
+
+    code_col = _pick_col(["代码", "symbol", "代码".lower(), "code"])
+    name_col = _pick_col(["名称", "name", "名称".lower()])
+    close_col = _pick_col(["最新价", "现价", "close", "最新价".lower()])
+    volume_col = _pick_col(["成交量", "volume", "总手", "成交量".lower()])
+
+    if code_col is None or close_col is None:
+        return pd.DataFrame(columns=["symbol", "name", "close", "volume", "trade_date"])
+
+    result = pd.DataFrame()
+    result["symbol"] = out[code_col].astype(str).map(lambda x: _normalize_cn_symbol(x).zfill(6))
+    result["name"] = out[name_col].astype(str) if name_col is not None else ""
+    result["close"] = pd.to_numeric(out[close_col], errors="coerce")
+    if volume_col is not None:
+        result["volume"] = pd.to_numeric(out[volume_col], errors="coerce")
+    else:
+        result["volume"] = np.nan
+    result = result[result["symbol"].str.match(r"^\d{6}$", na=False)]
+    result = result.dropna(subset=["close"]).drop_duplicates("symbol")
+    result["trade_date"] = _cn_snapshot_trade_date().date().isoformat()
+    return result[["symbol", "name", "close", "volume", "trade_date"]]
+
+
+def _refresh_cn_market_db_from_spot_snapshot() -> dict[str, Any]:
+    raw = None
+    errors: list[str] = []
+    for fn_name in ["stock_zh_a_spot_em", "stock_zh_a_spot"]:
+        raw, err = _safe_call_akshare(fn_name)
+        if err:
+            errors.append(f"{fn_name}: {err}")
+            continue
+        if isinstance(raw, pd.DataFrame) and not raw.empty:
+            break
+    if not isinstance(raw, pd.DataFrame) or raw.empty:
+        raise RuntimeError("无法获取全市场快照: " + "; ".join(errors))
+
+    snapshot = _normalize_cn_spot_snapshot(raw)
+    if snapshot.empty:
+        raise RuntimeError("全市场快照字段不匹配，无法标准化")
+
+    upsert_symbol_master(snapshot[["symbol", "name"]].drop_duplicates("symbol"))
+    updated = 0
+    failures: dict[str, str] = {}
+    trade_date = str(snapshot["trade_date"].iloc[0])
+    for _, row in snapshot.iterrows():
+        symbol = str(row["symbol"])
+        close = float(row["close"])
+        volume = float(row["volume"]) if pd.notna(row["volume"]) else 0.0
+        frame = pd.DataFrame(
+            {
+                "open": [close],
+                "high": [close],
+                "low": [close],
+                "close": [close],
+                "volume": [volume],
+            },
+            index=[pd.Timestamp(trade_date)],
+        )
+        try:
+            upsert_daily_bars(symbol, frame)
+            updated += 1
+        except Exception as exc:  # pylint: disable=broad-except
+            failures[symbol] = str(exc)
+    return {"trade_date": trade_date, "target": len(snapshot), "updated": updated, "failures": failures}
+
+
+def _refresh_cn_market_db_bars_online(
+    *,
+    symbols: list[str],
+    end: str,
+    max_workers: int,
+    progress_slot: Any | None = None,
+) -> dict[str, Any]:
+    normalized = list(dict.fromkeys([_normalize_cn_symbol(x).zfill(6) for x in symbols if str(x).strip()]))
+    end_ts = _effective_cn_daily_end(end)
+    end_str = end_ts.date().isoformat()
+    latest_dates = load_symbol_latest_bar_dates(normalized)
+    gap_symbols = [symbol for symbol in normalized if latest_dates.get(symbol, "") < end_str]
+    if not gap_symbols:
+        return {"target": len(normalized), "gap": 0, "updated": 0, "failures": {}}
+
+    def _per_symbol_start(symbol: str) -> str:
+        latest = latest_dates.get(symbol, "")
+        if latest:
+            latest_ts = pd.Timestamp(latest).normalize()
+            start_ts = max(pd.Timestamp(end_ts - BDay(10)).normalize(), pd.Timestamp(latest_ts - BDay(3)).normalize())
+            return start_ts.date().isoformat()
+        return pd.Timestamp(end_ts - BDay(10)).normalize().date().isoformat()
+
+    def _refresh_one(symbol: str) -> tuple[str, bool, str | None]:
+        try:
+            _fetch_cn_stock_history_cached(symbol, _per_symbol_start(symbol), end_str)
+            return symbol, True, None
+        except Exception as exc:  # pylint: disable=broad-except
+            return symbol, False, str(exc)
+
+    updated = 0
+    failures: dict[str, str] = {}
+    total = len(gap_symbols)
+    if progress_slot is not None:
+        progress_slot.progress(0.0, text=f"刷新日线尾部 0/{total}")
+
+    with ThreadPoolExecutor(max_workers=max(1, int(max_workers))) as executor:
+        futures = [executor.submit(_refresh_one, symbol) for symbol in gap_symbols]
+        done = 0
+        for future in as_completed(futures):
+            symbol, ok, err = future.result()
+            done += 1
+            if ok:
+                updated += 1
+            else:
+                failures[symbol] = err or "未知错误"
+            if progress_slot is not None:
+                progress_slot.progress(
+                    done / total,
+                    text=f"刷新日线尾部 {done}/{total}，成功 {updated}，失败 {len(failures)}",
+                )
+
+    return {"target": len(normalized), "gap": total, "updated": updated, "failures": failures}
+
+
+def _rebuild_cn_market_db_from_local(
+    *,
+    symbols: list[str],
+    include_bars: bool = True,
+    include_valuation: bool = True,
+    progress_slot: Any | None = None,
+) -> dict[str, Any]:
+    unique_symbols = list(dict.fromkeys([_normalize_cn_symbol(x).zfill(6) for x in symbols if str(x).strip()]))
+    total_tasks = len(unique_symbols) * int(include_bars) + len(unique_symbols) * int(include_valuation)
+    done = 0
+    bar_symbols = 0
+    valuation_symbols = 0
+    failures: dict[str, str] = {}
+
+    name_cache_path = _cn_symbol_name_cache_path()
+    if name_cache_path.exists():
+        try:
+            names = pd.read_parquet(name_cache_path)
+            if not names.empty and "symbol" in names.columns:
+                out = pd.DataFrame(
+                    {
+                        "symbol": names["symbol"].astype(str).map(lambda x: _normalize_cn_symbol(x).zfill(6)),
+                        "name": names["name"].astype(str) if "name" in names.columns else "",
+                    }
+                )
+                out = out[out["symbol"].isin(unique_symbols)]
+                if not out.empty:
+                    upsert_symbol_master(out[["symbol", "name"]].drop_duplicates("symbol"))
+        except Exception:
+            pass
+
+    if progress_slot is not None and total_tasks > 0:
+        progress_slot.progress(0.0, text=f"写入主库 0/{total_tasks}")
+
+    for symbol in unique_symbols:
+        if include_bars:
+            try:
+                frame = _read_cn_cached_history(symbol)
+                if not frame.empty:
+                    upsert_daily_bars(symbol, frame)
+                    bar_symbols += 1
+            except Exception as exc:  # pylint: disable=broad-except
+                failures[f"{symbol}:bars"] = str(exc)
+            done += 1
+            if progress_slot is not None and total_tasks > 0:
+                progress_slot.progress(done / total_tasks, text=f"写入主库 {done}/{total_tasks}")
+        if include_valuation:
+            try:
+                series = _read_cn_cached_total_value_local(symbol)
+                if len(series) > 0:
+                    from usalpha.market_db import upsert_daily_valuation
+
+                    upsert_daily_valuation(symbol, series)
+                    valuation_symbols += 1
+            except Exception as exc:  # pylint: disable=broad-except
+                failures[f"{symbol}:valuation"] = str(exc)
+            done += 1
+            if progress_slot is not None and total_tasks > 0:
+                progress_slot.progress(done / total_tasks, text=f"写入主库 {done}/{total_tasks}")
+
+    return {
+        "symbols": len(unique_symbols),
+        "bar_symbols": bar_symbols,
+        "valuation_symbols": valuation_symbols,
+        "failures": failures,
+    }
+
+
+def _refresh_cn_market_db_valuations_online(
+    *,
+    symbols: list[str],
+    end: str | None = None,
+    missing_only: bool = False,
+    progress_slot: Any | None = None,
+) -> dict[str, Any]:
+    unique_symbols = list(dict.fromkeys([_normalize_cn_symbol(x).zfill(6) for x in symbols if str(x).strip()]))
+    if missing_only and unique_symbols:
+        valuation_dates = load_symbol_latest_valuation_dates(unique_symbols)
+        unique_symbols = [symbol for symbol in unique_symbols if not valuation_dates.get(symbol, "")]
+    elif end is not None and unique_symbols:
+        valuation_dates = load_symbol_latest_valuation_dates(unique_symbols)
+        end_ts = _effective_cn_daily_end(end)
+        stale_cutoff = pd.Timestamp(end_ts - pd.Timedelta(days=30)).normalize().date().isoformat()
+        unique_symbols = [
+            symbol for symbol in unique_symbols
+            if valuation_dates.get(symbol, "") < stale_cutoff
+        ]
+    ok = 0
+    failures: dict[str, str] = {}
+    total = len(unique_symbols)
+    if total == 0:
+        return {"symbols": 0, "ok": 0, "failures": {}}
+    if progress_slot is not None and total > 0:
+        progress_slot.progress(0.0, text=f"更新总市值 0/{total}")
+    for i, symbol in enumerate(unique_symbols, start=1):
+        try:
+            series = refresh_total_value_history(symbol)
+            if len(series) > 0:
+                ok += 1
+        except Exception as exc:  # pylint: disable=broad-except
+            failures[symbol] = str(exc)
+        if progress_slot is not None and total > 0:
+            progress_slot.progress(i / total, text=f"更新总市值 {i}/{total}，成功 {ok}，失败 {len(failures)}")
+    return {"symbols": len(unique_symbols), "ok": ok, "failures": failures}
+
+
+def _refresh_cn_market_data_all_in_one(
+    *,
+    symbols: list[str],
+    end: str,
+    max_workers: int,
+    progress_slot: Any | None = None,
+) -> dict[str, Any]:
+    normalized = list(dict.fromkeys([_normalize_cn_symbol(x).zfill(6) for x in symbols if str(x).strip()]))
+    full_market_mode = len(normalized) >= 3000
+    total_steps = 2 if normalized else 0
+    if progress_slot is not None and total_steps > 0:
+        step1_text = "步骤 1/2：全市场快照日更" if full_market_mode else "步骤 1/2：更新日线尾部"
+        progress_slot.progress(0.0, text=step1_text)
+
+    spot_result: dict[str, Any] | None = None
+    if full_market_mode:
+        try:
+            spot_result = _refresh_cn_market_db_from_spot_snapshot()
+        except Exception as exc:  # pylint: disable=broad-except
+            spot_result = {"trade_date": "", "target": len(normalized), "updated": 0, "failures": {"snapshot": str(exc)}}
+        remaining_gap = [
+            symbol
+            for symbol in normalized
+            if load_symbol_latest_bar_dates([symbol]).get(symbol, "") < _effective_cn_daily_end(end).date().isoformat()
+        ]
+        if remaining_gap and len(remaining_gap) <= 200:
+            bars_result = _refresh_cn_market_db_bars_online(
+                symbols=remaining_gap,
+                end=end,
+                max_workers=max_workers,
+                progress_slot=None,
+            )
+        else:
+            bars_result = {
+                "target": len(normalized),
+                "gap": len(remaining_gap),
+                "updated": 0,
+                "failures": {},
+            }
+    else:
+        try:
+            spot_result = _refresh_cn_market_db_from_spot_snapshot()
+        except Exception:
+            spot_result = None
+
+        bars_result = _refresh_cn_market_db_bars_online(
+            symbols=normalized,
+            end=end,
+            max_workers=max_workers,
+            progress_slot=None,
+        )
+
+    if progress_slot is not None and total_steps > 0:
+        step2_text = "步骤 2/2：补缺失总市值" if full_market_mode else "步骤 2/2：更新总市值"
+        progress_slot.progress(0.5, text=step2_text)
+
+    valuation_result = _refresh_cn_market_db_valuations_online(
+        symbols=normalized,
+        end=end,
+        missing_only=full_market_mode,
+        progress_slot=None,
+    )
+
+    if progress_slot is not None and total_steps > 0:
+        progress_slot.progress(1.0, text="数据更新完成")
+
+    failures = {}
+    failures.update({f"bars:{k}": v for k, v in bars_result.get("failures", {}).items()})
+    failures.update({f"valuation:{k}": v for k, v in valuation_result.get("failures", {}).items()})
+    return {
+        "symbols": len(normalized),
+        "mode": "full_market_fast" if full_market_mode else "symbol_incremental",
+        "spot_updated": int(spot_result.get("updated", 0)) if isinstance(spot_result, dict) else 0,
+        "bars_gap": int(bars_result.get("gap", 0)),
+        "bars_updated": int(bars_result.get("updated", 0)),
+        "valuation_target": int(valuation_result.get("symbols", 0)),
+        "valuation_updated": int(valuation_result.get("ok", 0)),
+        "failures": failures,
     }
 
 
@@ -843,6 +1257,12 @@ def _fetch_cn_stock_history_cached(ticker: str, start: str, end: str) -> pd.Data
     symbol = _normalize_cn_symbol(ticker)
     start_ts = pd.Timestamp(start).normalize()
     end_ts = _effective_cn_daily_end(end)
+    db_frame = load_daily_bars(symbol, start_ts.date().isoformat(), end_ts.date().isoformat())
+    if not db_frame.empty:
+        db_start = pd.Timestamp(db_frame.index.min()).normalize()
+        db_end = pd.Timestamp(db_frame.index.max()).normalize()
+        if db_start <= start_ts and db_end >= end_ts:
+            return _with_usalpha_fields(db_frame.loc[(db_frame.index >= start_ts) & (db_frame.index <= end_ts)].copy())
     cached = _read_cn_cached_history(symbol)
     if not cached.empty:
         cached_start = pd.Timestamp(cached.index.min()).normalize()
@@ -859,26 +1279,13 @@ def _fetch_cn_stock_history_cached(ticker: str, start: str, end: str) -> pd.Data
             download_start_ts = max(start_ts, cached_end - pd.Timedelta(days=CN_INCREMENTAL_BACKFILL_DAYS))
 
     errors: list[str] = []
-    live = pd.DataFrame()
-    try:
-        live = _fetch_cn_stock_history_mootdx(symbol, download_start_ts.date().isoformat(), end_ts.date().isoformat())
-    except Exception as exc:  # pylint: disable=broad-except
-        errors.append(f"mootdx: {exc}")
-
-    if not live.empty:
-        merged = live if cached.empty else pd.concat([cached, live]).sort_index()
-        merged = merged[~merged.index.duplicated(keep="last")]
-        _write_cn_cached_history(symbol, merged)
-        return merged.loc[(merged.index >= start_ts) & (merged.index <= end_ts)].copy()
-
     if ak is None:
         if not cached.empty:
             sliced = cached.loc[(cached.index >= start_ts) & (cached.index <= end_ts)].copy()
             if not sliced.empty:
                 return sliced
         raise RuntimeError(
-            "未安装 akshare 且 mootdx 取数失败，无法加载中国股市K线；"
-            "请先执行 pip install akshare mootdx"
+            "未安装 akshare，无法加载中国股市K线；请先执行 pip install akshare"
         )
 
     _install_akshare_timeouts()
@@ -887,7 +1294,8 @@ def _fetch_cn_stock_history_cached(ticker: str, start: str, end: str) -> pd.Data
     download_start_yyyymmdd = download_start_ts.strftime("%Y%m%d")
     raw = pd.DataFrame()
 
-    # 参照 alpha_mining：先 stock_zh_a_daily，再 stock_zh_a_hist，最后 stock_zh_a_hist_tx；每个源做短重试。
+    # Only use akshare sources for CN daily bars.
+    # Order: stock_zh_a_daily -> stock_zh_a_hist -> stock_zh_a_hist_tx.
     for attempt in range(1, CN_AKSHARE_MAX_RETRIES + 1):
         try:
             daily_raw = ak.stock_zh_a_daily(symbol=_prefix_cn_symbol(symbol), adjust="qfq")
@@ -948,6 +1356,7 @@ def _fetch_cn_stock_history_cached(ticker: str, start: str, end: str) -> pd.Data
     merged = new_data if cached.empty else pd.concat([cached, new_data]).sort_index()
     merged = merged[~merged.index.duplicated(keep="last")]
     _write_cn_cached_history(symbol, merged)
+    upsert_daily_bars(symbol, merged)
     return merged.loc[(merged.index >= start_ts) & (merged.index <= end_ts)].copy()
 
 
@@ -1154,6 +1563,16 @@ def _score_to_action(score: float) -> str:
     if score >= 25:
         return "买入"
     if score <= -25:
+        return "卖出"
+    return "中性"
+
+
+def _percentile_to_action(percentile: float) -> str:
+    if not np.isfinite(percentile):
+        return "中性"
+    if percentile >= 0.8:
+        return "买入"
+    if percentile <= 0.2:
         return "卖出"
     return "中性"
 
@@ -1365,6 +1784,294 @@ def _render_technical_score_table(frame: pd.DataFrame, timeframe: str) -> None:
         st.info("数据不足，暂无法计算技术指标评分。")
         return
     st.dataframe(scores, use_container_width=True, hide_index=True)
+
+
+def _default_strategy_signal_params(strategy_type: str, *, market: str, prefix: str) -> dict[str, Any]:
+    market_upper = str(market).upper()
+    if strategy_type == "factor_rank":
+        expr = str(st.session_state.get(f"{prefix}_factor_expression", "")).strip()
+        return {"expression": expr or BACKTEST_FACTOR_TEMPLATES["5日动量"]}
+    if strategy_type == "alpha526_number_rank":
+        factor_number = int(st.session_state.get(f"{prefix}_alpha526_factor_number", 1) or 1)
+        return {"factor_number": max(1, min(526, factor_number))}
+    if strategy_type == "small_cap_timing":
+        return {
+            "min_total_value_yi": float(st.session_state.get(f"{prefix}_smallcap_min_mv", 3.0)),
+            "max_total_value_yi": float(st.session_state.get(f"{prefix}_smallcap_max_mv", 1000.0)),
+            "amount_window": int(st.session_state.get(f"{prefix}_smallcap_amount_window", 20)),
+            "min_avg_amount": float(st.session_state.get(f"{prefix}_smallcap_min_amount", 0.0)),
+            "exclude_st": bool(st.session_state.get(f"{prefix}_smallcap_exclude_st", True)),
+            "exclude_delisting": bool(st.session_state.get(f"{prefix}_smallcap_exclude_delisting", True)),
+        }
+    if strategy_type == "institutional_crowding":
+        return {
+            "min_total_value_yi": float(st.session_state.get(f"{prefix}_inst_min_mv", 200.0)),
+            "min_avg_amount": float(st.session_state.get(f"{prefix}_inst_min_amount", 300_000_000.0)),
+            "max_turnover_ratio": float(st.session_state.get(f"{prefix}_inst_max_turnover_ratio", 0.08))
+            if bool(st.session_state.get(f"{prefix}_inst_use_turnover_cap", True))
+            else None,
+            "momentum_window": int(st.session_state.get(f"{prefix}_inst_momentum_window", 60)),
+            "trend_window": int(st.session_state.get(f"{prefix}_inst_trend_window", 120)),
+            "turnover_window": int(st.session_state.get(f"{prefix}_inst_turnover_window", 20)),
+            "vol_window": int(st.session_state.get(f"{prefix}_inst_vol_window", 20)),
+            "exclude_st": bool(st.session_state.get(f"{prefix}_inst_exclude_st", True)),
+            "exclude_delisting": bool(st.session_state.get(f"{prefix}_inst_exclude_delisting", True)),
+        }
+    if strategy_type == "institutional_white_horse":
+        return {
+            "min_total_value_yi": 500.0,
+            "min_avg_amount": 500_000_000.0,
+            "max_turnover_ratio": 0.05,
+            "momentum_window": 80,
+            "trend_window": 150,
+            "turnover_window": 20,
+            "vol_window": 25,
+            "exclude_st": True,
+            "exclude_delisting": True,
+        }
+    if strategy_type == "institutional_growth":
+        return {
+            "min_total_value_yi": 120.0,
+            "min_avg_amount": 200_000_000.0,
+            "max_turnover_ratio": 0.12,
+            "momentum_window": 50,
+            "trend_window": 90,
+            "turnover_window": 20,
+            "vol_window": 20,
+            "exclude_st": True,
+            "exclude_delisting": True,
+        }
+    if strategy_type in {"technical_score", "alpha526_number_rank"}:
+        return {}
+    if market_upper == "US" and strategy_type in {
+        "small_cap_timing",
+        "institutional_crowding",
+        "institutional_white_horse",
+        "institutional_growth",
+    }:
+        return {}
+    return {}
+
+
+def _resolve_stock_signal_benchmark(market: str, prefix: str, start: str, end: str) -> pd.DataFrame:
+    market_upper = str(market).upper()
+    if market_upper == "CN":
+        selected_key = str(st.session_state.get(f"{prefix}_benchmark_select", "000001")).strip().upper() or "000001"
+        if selected_key == "CUSTOM":
+            benchmark_code = _normalize_cn_symbol(str(st.session_state.get(f"{prefix}_benchmark_custom", "000001"))).zfill(6)
+        else:
+            benchmark_code = _normalize_cn_symbol(selected_key).zfill(6)
+        try:
+            return _fetch_cn_index_history_cached(benchmark_code, start, end)
+        except Exception:
+            return pd.DataFrame()
+    benchmark_ticker = str(st.session_state.get(f"{prefix}_benchmark", "SPY")).strip().upper() or "SPY"
+    try:
+        return _fetch_stock_history_cached(benchmark_ticker, start, end)
+    except Exception:
+        return pd.DataFrame()
+
+
+def _fallback_signal_universe(market: str) -> list[str]:
+    market_upper = str(market).upper()
+    if market_upper == "CN":
+        master = load_symbol_master()
+        if master.empty:
+            return []
+        return master["symbol"].astype(str).head(240).tolist()
+    raw = str(st.session_state.get("us_bt_pool", "AAPL,MSFT,NVDA,AMZN,GOOGL,META,TSLA,AVGO,AMD,NFLX"))
+    return resolve_tickers_limited(
+        [token.strip() for token in raw.replace("\n", ",").replace("，", ",").split(",") if token.strip()],
+        max_tickers=80,
+    )
+
+
+def _resolve_strategy_signal_universe(market: str, ticker: str) -> tuple[list[str], str]:
+    market_upper = str(market).upper()
+    normalized_ticker = _normalize_cn_symbol(ticker).zfill(6) if market_upper == "CN" else str(ticker).strip().upper()
+    if market_upper == "CN":
+        recent = st.session_state.get("cn_backtest_last_tickers")
+        if isinstance(recent, list) and recent:
+            tickers = [_normalize_cn_symbol(x).zfill(6) for x in recent if str(x).strip()]
+            if normalized_ticker not in tickers:
+                tickers.insert(0, normalized_ticker)
+            return list(dict.fromkeys(tickers)), "最近一次A股回测股票池"
+    else:
+        recent = st.session_state.get("us_backtest_last_tickers")
+        if isinstance(recent, list) and recent:
+            tickers = [str(x).strip().upper() for x in recent if str(x).strip()]
+            if normalized_ticker not in tickers:
+                tickers.insert(0, normalized_ticker)
+            return list(dict.fromkeys(tickers)), "最近一次美股回测股票池"
+
+    fallback = _fallback_signal_universe(market_upper)
+    if normalized_ticker not in fallback:
+        fallback.insert(0, normalized_ticker)
+    return list(dict.fromkeys(fallback)), "默认样本池"
+
+
+@st.cache_data(ttl=1800, show_spinner=False)
+def _load_stock_signal_histories(
+    market: str,
+    tickers: tuple[str, ...],
+    start: str,
+    end: str,
+) -> dict[str, pd.DataFrame]:
+    market_upper = str(market).upper()
+    out: dict[str, pd.DataFrame] = {}
+    for raw_ticker in tickers:
+        try:
+            if market_upper == "CN":
+                symbol = _normalize_cn_symbol(raw_ticker).zfill(6)
+                frame = load_daily_bars(symbol, start, end)
+                if frame.empty:
+                    continue
+                out[symbol] = _with_usalpha_fields(frame)
+            else:
+                symbol = str(raw_ticker).strip().upper()
+                frame = _fetch_stock_history_cached(symbol, start, end)
+                if frame.empty:
+                    continue
+                frame = frame.copy()
+                frame.columns = [str(col).lower() for col in frame.columns]
+                out[symbol] = frame.sort_index()
+        except Exception:
+            continue
+    return out
+
+
+def _latest_symbol_score(score_matrix: pd.DataFrame, symbol: str, asof_date: pd.Timestamp) -> tuple[pd.Timestamp | None, float | None, float | None]:
+    if score_matrix is None or score_matrix.empty or symbol not in score_matrix.columns:
+        return None, None, None
+    available = score_matrix.loc[score_matrix.index <= pd.Timestamp(asof_date).normalize()]
+    if available.empty:
+        return None, None, None
+    series = pd.to_numeric(available[symbol], errors="coerce").dropna()
+    if series.empty:
+        return None, None, None
+    latest_date = pd.Timestamp(series.index[-1]).normalize()
+    latest_row = pd.to_numeric(available.loc[latest_date], errors="coerce").dropna()
+    if latest_row.empty or symbol not in latest_row.index:
+        return latest_date, float(series.iloc[-1]), None
+    percentile = float(latest_row.rank(pct=True).get(symbol, np.nan))
+    return latest_date, float(series.iloc[-1]), percentile
+
+
+def _build_stock_strategy_signal_summary(
+    *,
+    market: str,
+    ticker: str,
+    selected_history: pd.DataFrame,
+    asof_date: pd.Timestamp,
+) -> tuple[pd.DataFrame, str]:
+    market_upper = str(market).upper()
+    normalized_ticker = _normalize_cn_symbol(ticker).zfill(6) if market_upper == "CN" else str(ticker).strip().upper()
+    universe, source_label = _resolve_strategy_signal_universe(market_upper, normalized_ticker)
+    history_start = (pd.Timestamp(asof_date).normalize() - pd.Timedelta(days=550)).date().isoformat()
+    histories = _load_stock_signal_histories(market_upper, tuple(universe), history_start, pd.Timestamp(asof_date).date().isoformat())
+    if not selected_history.empty:
+        frame = selected_history.copy()
+        frame.index = pd.to_datetime(frame.index).tz_localize(None)
+        frame.columns = [str(col).lower() for col in frame.columns]
+        histories[normalized_ticker] = frame.sort_index()
+    if normalized_ticker not in histories:
+        return pd.DataFrame(), source_label
+
+    benchmark_df = _resolve_stock_signal_benchmark("CN" if market_upper == "CN" else "US", "cn_bt" if market_upper == "CN" else "us_bt", history_start, pd.Timestamp(asof_date).date().isoformat())
+    rows: list[dict[str, Any]] = []
+    for spec in _backtest_strategy_specs():
+        strategy_type = str(spec["type"])
+        supported = not (market_upper == "US" and strategy_type in {
+            "small_cap_timing",
+            "institutional_crowding",
+            "institutional_white_horse",
+            "institutional_growth",
+        })
+        if not supported:
+            rows.append(
+                {
+                    "策略": spec["name"],
+                    "信号": "不支持",
+                    "最新日期": "-",
+                    "分数": "-",
+                    "分位": "-",
+                    "说明": "该策略当前仅支持A股日线样本。",
+                }
+            )
+            continue
+        params = _default_strategy_signal_params(strategy_type, market=market_upper, prefix="cn_bt" if market_upper == "CN" else "us_bt")
+        runtime_params = dict(params)
+        runtime_params["__benchmark__"] = benchmark_df
+        try:
+            score_matrix = get_strategy(strategy_type).generate_score_matrix(histories, runtime_params)
+            latest_date, latest_score, latest_pct = _latest_symbol_score(score_matrix, normalized_ticker, asof_date)
+            if latest_date is None or latest_score is None:
+                rows.append(
+                    {
+                        "策略": spec["name"],
+                        "信号": "无信号",
+                        "最新日期": "-",
+                        "分数": "-",
+                        "分位": "-",
+                        "说明": "该股票在当前参数下被过滤，或样本数据不足以生成最新分数。",
+                    }
+                )
+                continue
+            if strategy_type == "technical_score":
+                action = _score_to_action(float(latest_score))
+                reason = f"绝对综合分 {latest_score:.2f}，按技术评分阈值直接映射。"
+            else:
+                action = _percentile_to_action(float(latest_pct) if latest_pct is not None else np.nan)
+                reason = f"基于样本池横截面分位 {latest_pct:.1%} 映射信号。"
+            if strategy_type == "factor_rank":
+                reason += f" 表达式: {params['expression']}"
+            elif strategy_type == "alpha526_number_rank":
+                meta = get_alpha526_factor_meta(int(params["factor_number"]))
+                if meta is not None:
+                    reason += f" 因子#{meta['number']} {meta['name']}"
+            rows.append(
+                {
+                    "策略": spec["name"],
+                    "信号": action,
+                    "最新日期": pd.Timestamp(latest_date).date().isoformat(),
+                    "分数": round(float(latest_score), 4),
+                    "分位": "-" if latest_pct is None or not np.isfinite(latest_pct) else f"{float(latest_pct):.1%}",
+                    "说明": reason,
+                }
+            )
+        except Exception as exc:  # pylint: disable=broad-except
+            rows.append(
+                {
+                    "策略": spec["name"],
+                    "信号": "无信号",
+                    "最新日期": "-",
+                    "分数": "-",
+                    "分位": "-",
+                    "说明": f"计算失败: {exc}",
+                }
+            )
+    return pd.DataFrame(rows), source_label
+
+
+def _render_strategy_signal_summary(
+    *,
+    market: str,
+    ticker: str,
+    selected_history: pd.DataFrame,
+    asof_date: pd.Timestamp,
+) -> None:
+    st.markdown("#### 回测策略信号总览")
+    summary, source_label = _build_stock_strategy_signal_summary(
+        market=market,
+        ticker=ticker,
+        selected_history=selected_history,
+        asof_date=asof_date,
+    )
+    st.caption(f"口径: 使用 {source_label} 计算最新横截面分数；技术指标综合分按绝对分数映射，其余策略按横截面分位映射为买入/中性/卖出。")
+    if summary.empty:
+        st.info("当前无法生成策略信号总览。")
+        return
+    st.dataframe(summary, use_container_width=True, hide_index=True)
 
 
 def _render_ohlcv_macd_chart(
@@ -1645,6 +2352,13 @@ def _render_stock_technical_panel(
         m2.metric("收盘价", _metric(latest["close"], 2))
         m3.metric("日线区间涨跌幅", _metric(daily["close"].iloc[-1] / daily["close"].iloc[0] - 1.0, 4) if len(daily) else "NaN")
         m4.metric("最新成交量", f"{float(latest['volume']):,.0f}")
+
+        _render_strategy_signal_summary(
+            market="CN" if str(key_prefix).startswith("cn_") else "US",
+            ticker=ticker,
+            selected_history=full_daily,
+            asof_date=pd.Timestamp(full_daily.index[-1]),
+        )
 
         with st.expander("因子买卖点预测接口说明", expanded=False):
             st.write(
@@ -2500,27 +3214,40 @@ TRADE_MODE_REGISTRY = {
 def _render_standalone_backtest(result: dict[str, Any]) -> None:
     daily = result["daily"]
     metrics = result["metrics"]
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    c1, c2, c3, c4 = st.columns(4)
     c1.metric("最终资产", f"{metrics['final_equity']:,.2f}")
     c2.metric("策略收益", f"{metrics['total_return']:.2%}")
-    c3.metric("沪指收益", "-" if pd.isna(metrics["benchmark_return"]) else f"{metrics['benchmark_return']:.2%}")
-    c4.metric("Sharpe", _metric(metrics["sharpe"], 3))
-    c5.metric("IC", _metric(metrics["ic"], 4))
-    c6.metric("最大回撤", "-" if pd.isna(metrics["max_drawdown"]) else f"{metrics['max_drawdown']:.2%}")
+    c3.metric("基准收益", "-" if pd.isna(metrics["benchmark_return"]) else f"{metrics['benchmark_return']:.2%}")
+    c4.metric("最大回撤", "-" if pd.isna(metrics["max_drawdown"]) else f"{metrics['max_drawdown']:.2%}")
+
+    r1 = st.columns(5)
+    r1[0].metric("Sharpe", _metric(metrics["sharpe"], 3))
+    r1[1].metric("IC 1D", _metric(metrics.get("ic_1d", float("nan")), 4))
+    r1[2].metric("IC 5D", _metric(metrics.get("ic_5d", float("nan")), 4))
+    r1[3].metric("IC 10D", _metric(metrics.get("ic_10d", float("nan")), 4))
+    r1[4].metric("IC 20D", _metric(metrics.get("ic_20d", float("nan")), 4))
+
+    r2 = st.columns(4)
+    r2[0].metric("TopK 5D", "-" if pd.isna(metrics.get("topk_ret_5d", float("nan"))) else f"{metrics['topk_ret_5d']:.2%}")
+    r2[1].metric("TopK 10D", "-" if pd.isna(metrics.get("topk_ret_10d", float("nan"))) else f"{metrics['topk_ret_10d']:.2%}")
+    r2[2].metric("TopK超额 5D", "-" if pd.isna(metrics.get("topk_excess_5d", float("nan"))) else f"{metrics['topk_excess_5d']:.2%}")
+    r2[3].metric("TopK超额 10D", "-" if pd.isna(metrics.get("topk_excess_10d", float("nan"))) else f"{metrics['topk_excess_10d']:.2%}")
 
     view = daily.reset_index()
+    strategy_type = str(result.get("strategy_type", "strategy"))
+    trading_method_type = str(result.get("trading_method_type", "method"))
     if go is not None:
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=view["datetime"], y=view["cum_strategy"], mode="lines", name="策略一 / 交易模式一"))
+        fig.add_trace(go.Scatter(x=view["datetime"], y=view["cum_strategy"], mode="lines", name=f"{strategy_type} / {trading_method_type}"))
         if "cum_benchmark" in view.columns:
-            fig.add_trace(go.Scatter(x=view["datetime"], y=view["cum_benchmark"], mode="lines", name="沪指基线"))
+            fig.add_trace(go.Scatter(x=view["datetime"], y=view["cum_benchmark"], mode="lines", name="benchmark"))
         fig.update_layout(title="收益曲线", xaxis_title="日期", yaxis_title="累计净值")
         st.plotly_chart(fig, use_container_width=True)
     else:
         cols = ["cum_strategy"] + (["cum_benchmark"] if "cum_benchmark" in daily.columns else [])
         st.line_chart(daily[cols])
 
-    tabs = st.tabs(["每日选股", "持仓", "交易流水", "日度IC"])
+    tabs = st.tabs(["每日选股", "持仓", "交易流水", "多周期评估", "执行诊断"])
     with tabs[0]:
         selections = result.get("selections", pd.DataFrame())
         if selections is None or selections.empty:
@@ -2532,7 +3259,7 @@ def _render_standalone_backtest(result: dict[str, Any]) -> None:
             "选择日期",
             [str(pd.Timestamp(x).date()) for x in daily.index],
             index=len(daily.index) - 1,
-            key="standalone_bt_holdings_date",
+            key=f"standalone_bt_holdings_date_{strategy_type}_{trading_method_type}",
         )
         holdings = daily.loc[pd.Timestamp(selected_date)].get("holdings", [])
         if holdings:
@@ -2544,15 +3271,489 @@ def _render_standalone_backtest(result: dict[str, Any]) -> None:
         if trades is None or trades.empty:
             st.info("暂无交易流水。")
         else:
-            st.dataframe(trades.sort_values("date", ascending=False), use_container_width=True, hide_index=True)
+            sort_col = "execution_date" if "execution_date" in trades.columns else ("date" if "date" in trades.columns else None)
+            display = trades.sort_values(sort_col, ascending=False) if sort_col is not None else trades
+            st.dataframe(display, use_container_width=True, hide_index=True)
     with tabs[3]:
-        ic_daily = result.get("ic_daily", pd.DataFrame())
-        if ic_daily is None or ic_daily.empty:
-            st.info("暂无可计算的日度IC。")
-        elif px is not None:
-            st.plotly_chart(px.line(ic_daily, x="date", y="ic", title="日度IC"), use_container_width=True)
+        horizon_ic_daily = result.get("horizon_ic_daily", {}) or {}
+        selected_horizon = st.selectbox("收益评估周期", options=[1, 5, 10, 20], index=1, key=f"horizon_eval_{strategy_type}_{trading_method_type}")
+        horizon_frame = horizon_ic_daily.get(int(selected_horizon), pd.DataFrame())
+        if horizon_frame is None or horizon_frame.empty:
+            st.info("暂无可计算的多周期评估结果。")
         else:
-            st.line_chart(ic_daily.set_index("date")["ic"])
+            s1, s2, s3 = st.columns(3)
+            mean_ic = float(horizon_frame["ic"].mean()) if "ic" in horizon_frame.columns else float("nan")
+            mean_topk = float(horizon_frame["topk_future_return"].mean()) if "topk_future_return" in horizon_frame.columns else float("nan")
+            mean_excess = float(horizon_frame["topk_excess_return"].mean()) if "topk_excess_return" in horizon_frame.columns else float("nan")
+            s1.metric(f"IC {selected_horizon}D", _metric(mean_ic, 4))
+            s2.metric(f"TopK {selected_horizon}D", "-" if pd.isna(mean_topk) else f"{mean_topk:.2%}")
+            s3.metric(f"TopK超额 {selected_horizon}D", "-" if pd.isna(mean_excess) else f"{mean_excess:.2%}")
+            if px is not None:
+                st.plotly_chart(px.line(horizon_frame, x="date", y="ic", title=f"{selected_horizon}日 Horizon IC"), use_container_width=True)
+                st.plotly_chart(
+                    px.line(
+                        horizon_frame,
+                        x="date",
+                        y=["topk_future_return", "cross_section_mean_return", "topk_excess_return"],
+                        title=f"{selected_horizon}日 TopK 未来收益 / 全市场均值 / 超额收益",
+                    ),
+                    use_container_width=True,
+                )
+            else:
+                st.line_chart(horizon_frame.set_index("date")["ic"])
+            st.dataframe(horizon_frame.sort_values("date", ascending=False), use_container_width=True, hide_index=True)
+    with tabs[4]:
+        execution = result.get("execution_diagnostics", {})
+        totals = execution.get("totals", {})
+        daily_exec = execution.get("daily", [])
+        if totals:
+            st.json(totals)
+        if daily_exec:
+            st.dataframe(pd.DataFrame(daily_exec), use_container_width=True, hide_index=True)
+        elif not totals:
+            st.info("暂无执行诊断。")
+
+
+def _backtest_strategy_specs() -> list[dict[str, str]]:
+    return list_strategy_metadata()
+
+
+def _backtest_trading_method_specs() -> list[dict[str, str]]:
+    return list_trading_method_metadata()
+
+
+def _select_cn_backtest_benchmark(prefix: str) -> tuple[str, str]:
+    labels = list(CN_BACKTEST_BENCHMARK_OPTIONS.values())
+    keys = list(CN_BACKTEST_BENCHMARK_OPTIONS.keys())
+    default_index = keys.index("000001")
+    selected_label = st.selectbox("基准指数", options=labels, index=default_index, key=f"{prefix}_benchmark_select")
+    selected_key = keys[labels.index(selected_label)]
+    if selected_key == "CUSTOM":
+        custom_code = _normalize_cn_symbol(
+            st.text_input(
+                "自定义指数代码",
+                value="000001",
+                key=f"{prefix}_benchmark_custom",
+                help="例如 000001、000300、399006。",
+            )
+        ).zfill(6)
+        return custom_code, f"自定义指数 {custom_code}"
+    return selected_key, CN_BACKTEST_BENCHMARK_OPTIONS[selected_key]
+
+
+def _select_strategy_for_backtest(prefix: str) -> tuple[str, str, dict[str, Any]]:
+    specs = _backtest_strategy_specs()
+    options = [f"{spec['name']} [{spec['type']}]" for spec in specs]
+    default_index = next((idx for idx, spec in enumerate(specs) if spec["type"] == "technical_score"), 0)
+    selected_label = st.selectbox("策略", options=options, index=default_index, key=f"{prefix}_strategy_type")
+    selected_spec = specs[options.index(selected_label)]
+    st.caption(selected_spec["description"])
+    with st.expander("策略说明", expanded=False):
+        st.markdown(selected_spec.get("explanation", ""))
+
+    params: dict[str, Any] = {}
+    if selected_spec["type"] == "factor_rank":
+        template_key = f"{prefix}_factor_template"
+        expression_key = f"{prefix}_factor_expression"
+        template_names = list(BACKTEST_FACTOR_TEMPLATES.keys())
+        selected_template = st.selectbox(
+            "表达式模板",
+            options=template_names,
+            index=0,
+            key=template_key,
+            help="先选一个常用模板，再按需要微调表达式。",
+        )
+        template_expr = BACKTEST_FACTOR_TEMPLATES[selected_template]
+        last_template_key = f"{prefix}_factor_template_last"
+        if expression_key not in st.session_state:
+            st.session_state[expression_key] = BACKTEST_FACTOR_TEMPLATES["5日动量"]
+        if st.session_state.get(last_template_key) != selected_template and template_expr:
+            st.session_state[expression_key] = template_expr
+        st.session_state[last_template_key] = selected_template
+        params["expression"] = st.text_area(
+            "因子表达式",
+            height=80,
+            key=expression_key,
+            help="支持 $open/$high/$low/$close/$vwap/$volume 以及 Ref/Mean/Std/Slope/Rsquare/Resi/Max/Min 等基础算子。",
+        ).strip()
+    elif selected_spec["type"] == "alpha526_number_rank":
+        factor_number = int(
+            st.number_input(
+                "526因子编号",
+                min_value=1,
+                max_value=526,
+                value=1,
+                step=1,
+                key=f"{prefix}_alpha526_factor_number",
+                help="直接输入 1~526 的编号，系统会从本地 526 因子库读取对应表达式。",
+            )
+        )
+        params["factor_number"] = factor_number
+        meta = get_alpha526_factor_meta(factor_number)
+        if meta is not None:
+            st.caption(f"编号 {meta['number']} | 名称 {meta['name']} | 分类 {meta['category']}")
+            st.code(str(meta["expression"]), language="text")
+    elif selected_spec["type"] == "small_cap_timing":
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            params["min_total_value_yi"] = float(
+                st.number_input(
+                    "最小总市值(亿)",
+                    min_value=0.0,
+                    max_value=1000000.0,
+                    value=3.0,
+                    step=1.0,
+                    key=f"{prefix}_smallcap_min_mv",
+                )
+            )
+        with c2:
+            params["max_total_value_yi"] = float(
+                st.number_input(
+                    "最大总市值(亿)",
+                    min_value=0.0,
+                    max_value=1000000.0,
+                    value=1000.0,
+                    step=10.0,
+                    key=f"{prefix}_smallcap_max_mv",
+                )
+            )
+        with c3:
+            params["amount_window"] = int(
+                st.number_input(
+                    "成交额均线窗口",
+                    min_value=1,
+                    max_value=250,
+                    value=20,
+                    step=1,
+                    key=f"{prefix}_smallcap_amount_window",
+                )
+            )
+        params["min_avg_amount"] = float(
+            st.number_input(
+                "最小日均成交额",
+                min_value=0.0,
+                value=0.0,
+                step=10000000.0,
+                format="%.0f",
+                key=f"{prefix}_smallcap_min_amount",
+                help="用于过滤极端缺乏流动性的标的；单位与A股日成交额一致。",
+            )
+        )
+        c4, c5 = st.columns(2)
+        with c4:
+            params["exclude_st"] = st.checkbox("过滤ST", value=True, key=f"{prefix}_smallcap_exclude_st")
+        with c5:
+            params["exclude_delisting"] = st.checkbox("过滤退市整理", value=True, key=f"{prefix}_smallcap_exclude_delisting")
+        st.caption("当前版本按历史总市值从小到大排序，并支持成交额过滤；ST/退市过滤使用当前证券名称近似，不是严格历史口径。")
+    elif selected_spec["type"] in {"institutional_crowding", "institutional_white_horse", "institutional_growth"}:
+        if selected_spec["type"] == "institutional_white_horse":
+            default_min_mv = 500.0
+            default_min_amount = 500_000_000.0
+            default_use_turnover_cap = True
+            default_max_turnover = 0.05
+            default_momentum_window = 80
+            default_trend_window = 150
+            default_turnover_window = 20
+            default_vol_window = 25
+            caption = "白马机构抱团更偏向容量大、成交稳、换手低、波动低的核心资产。"
+        elif selected_spec["type"] == "institutional_growth":
+            default_min_mv = 120.0
+            default_min_amount = 200_000_000.0
+            default_use_turnover_cap = True
+            default_max_turnover = 0.12
+            default_momentum_window = 50
+            default_trend_window = 90
+            default_turnover_window = 20
+            default_vol_window = 20
+            caption = "成长机构抱团更偏向趋势更强、景气更高、但仍保持机构容量和流动性的成长股。"
+        else:
+            default_min_mv = 200.0
+            default_min_amount = 300_000_000.0
+            default_use_turnover_cap = True
+            default_max_turnover = 0.08
+            default_momentum_window = 60
+            default_trend_window = 120
+            default_turnover_window = 20
+            default_vol_window = 20
+            caption = "机构抱团代理分数并不依赖公开机构持仓明细，而是用大市值、高成交额、低换手、强趋势、低波动这些可回测代理特征来逼近机构重仓股。"
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            params["min_total_value_yi"] = float(
+                st.number_input(
+                    "最小总市值(亿)",
+                    min_value=0.0,
+                    max_value=1000000.0,
+                    value=default_min_mv,
+                    step=10.0,
+                    key=f"{prefix}_inst_min_mv",
+                )
+            )
+        with c2:
+            params["min_avg_amount"] = float(
+                st.number_input(
+                    "最小日均成交额",
+                    min_value=0.0,
+                    value=default_min_amount,
+                    step=50_000_000.0,
+                    format="%.0f",
+                    key=f"{prefix}_inst_min_amount",
+                )
+            )
+        with c3:
+            use_turnover_cap = st.checkbox("启用换手率上限", value=default_use_turnover_cap, key=f"{prefix}_inst_use_turnover_cap")
+            params["max_turnover_ratio"] = float(
+                st.number_input(
+                    "日均换手率上限",
+                    min_value=0.0,
+                    max_value=1.0,
+                    value=default_max_turnover,
+                    step=0.01,
+                    format="%.2f",
+                    key=f"{prefix}_inst_max_turnover_ratio",
+                    disabled=not use_turnover_cap,
+                )
+            ) if use_turnover_cap else None
+        d1, d2, d3, d4 = st.columns(4)
+        with d1:
+            params["momentum_window"] = int(st.number_input("动量窗口", min_value=5, max_value=250, value=default_momentum_window, step=1, key=f"{prefix}_inst_momentum_window"))
+        with d2:
+            params["trend_window"] = int(st.number_input("趋势窗口", min_value=10, max_value=250, value=default_trend_window, step=1, key=f"{prefix}_inst_trend_window"))
+        with d3:
+            params["turnover_window"] = int(st.number_input("换手窗口", min_value=5, max_value=250, value=default_turnover_window, step=1, key=f"{prefix}_inst_turnover_window"))
+        with d4:
+            params["vol_window"] = int(st.number_input("波动窗口", min_value=5, max_value=250, value=default_vol_window, step=1, key=f"{prefix}_inst_vol_window"))
+        e1, e2 = st.columns(2)
+        with e1:
+            params["exclude_st"] = st.checkbox("过滤ST", value=True, key=f"{prefix}_inst_exclude_st")
+        with e2:
+            params["exclude_delisting"] = st.checkbox("过滤退市整理", value=True, key=f"{prefix}_inst_exclude_delisting")
+        st.caption(caption)
+    return selected_spec["type"], selected_spec["name"], params
+
+
+def _select_trading_method_for_backtest(prefix: str, *, market: str) -> tuple[str, str, dict[str, Any], int]:
+    specs = _backtest_trading_method_specs()
+    options = [f"{spec['name']} [{spec['type']}]" for spec in specs]
+    default_index = next((idx for idx, spec in enumerate(specs) if spec["type"] == "topk_dropout"), 0)
+    selected_label = st.selectbox("交易方法", options=options, index=default_index, key=f"{prefix}_trading_method_type")
+    selected_spec = specs[options.index(selected_label)]
+    st.caption(selected_spec["description"])
+
+    is_cn = market.upper() == "CN"
+
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        topk = int(st.number_input("持仓 TopK", min_value=1, max_value=100, value=10, step=1, key=f"{prefix}_topk"))
+    with c2:
+        n_drop = int(st.number_input("每次淘汰数", min_value=0, max_value=100, value=2, step=1, key=f"{prefix}_n_drop"))
+    with c3:
+        initial_capital = float(
+            st.number_input(
+                "初始资金",
+                min_value=10000.0,
+                value=1_000_000.0 if is_cn else 100_000.0,
+                step=10000.0,
+                key=f"{prefix}_initial_capital",
+            )
+        )
+    with c4:
+        top_signal_count = int(
+            st.number_input("展示前N名信号", min_value=1, max_value=100, value=max(10, topk), step=1, key=f"{prefix}_top_signal_count")
+        )
+
+    d1, d2, d3, d4 = st.columns(4)
+    with d1:
+        open_cost = float(st.number_input("买入费率", min_value=0.0, max_value=1.0, value=0.001, step=0.0005, format="%.4f", key=f"{prefix}_open_cost"))
+    with d2:
+        close_cost = float(st.number_input("卖出费率", min_value=0.0, max_value=1.0, value=0.001, step=0.0005, format="%.4f", key=f"{prefix}_close_cost"))
+    with d3:
+        min_cost = float(st.number_input("单笔最低费用", min_value=0.0, value=5.0 if is_cn else 0.0, step=1.0, key=f"{prefix}_min_cost"))
+    with d4:
+        impact_cost = float(st.number_input("冲击成本", min_value=0.0, max_value=1.0, value=0.0, step=0.0005, format="%.4f", key=f"{prefix}_impact_cost"))
+
+    e1, e2, e3, e4 = st.columns(4)
+    with e1:
+        deal_price = st.selectbox("成交价字段", options=["open", "close", "vwap"], index=0, key=f"{prefix}_deal_price")
+    with e2:
+        limit_threshold = float(
+            st.number_input(
+                "涨跌停阈值",
+                min_value=0.0,
+                max_value=0.5,
+                value=0.095 if is_cn else 0.5,
+                step=0.01,
+                format="%.3f",
+                key=f"{prefix}_limit_threshold",
+            )
+        )
+    with e3:
+        use_trade_unit = st.checkbox("启用最小成交单位", value=is_cn, key=f"{prefix}_use_trade_unit")
+        trade_unit = int(
+            st.number_input(
+                "最小成交单位",
+                min_value=1,
+                max_value=10000,
+                value=100 if is_cn else 1,
+                step=1,
+                key=f"{prefix}_trade_unit",
+                disabled=not use_trade_unit,
+            )
+        ) if use_trade_unit else None
+    with e4:
+        forbid_all_trade_at_limit = st.checkbox("封板时禁止全部交易", value=is_cn, key=f"{prefix}_forbid_limit_trade")
+
+    use_volume_limit = st.checkbox("启用成交量限制", value=False, key=f"{prefix}_use_volume_limit")
+    volume_limit_ratio = float(
+        st.slider("单日成交量上限比例", min_value=0.0, max_value=1.0, value=0.05, step=0.01, key=f"{prefix}_volume_limit_ratio")
+    ) if use_volume_limit else None
+
+    dynamic_topk_enabled = False
+    dynamic_topk_index_code = None
+    dynamic_topk_ma_window = 10
+    dynamic_topk_map: list[dict[str, Any]] = []
+    take_profit_multiple = None
+    stop_loss_pct = None
+    hold_limit_up_positions = False
+    exclude_suspended_candidates = False
+
+    if market.upper() == "CN":
+        with st.expander("小市值轮动扩展参数", expanded=False):
+            dynamic_topk_enabled = st.checkbox(
+                "启用指数温度动态持仓数",
+                value=False,
+                key=f"{prefix}_dynamic_topk_enabled",
+                help="按指数收盘价与均线偏离度，动态把 topk 调成 3/4/5/6 档。",
+            )
+            if dynamic_topk_enabled:
+                c1, c2 = st.columns(2)
+                with c1:
+                    dynamic_topk_index_code = _normalize_cn_symbol(
+                        st.text_input(
+                            "温度指数代码",
+                            value="399101",
+                            key=f"{prefix}_dynamic_topk_index",
+                            help="例如 399101 表示中小板综。",
+                        )
+                    ).zfill(6)
+                with c2:
+                    dynamic_topk_ma_window = int(
+                        st.number_input(
+                            "均线窗口",
+                            min_value=2,
+                            max_value=250,
+                            value=10,
+                            step=1,
+                            key=f"{prefix}_dynamic_topk_ma_window",
+                        )
+                    )
+                dynamic_topk_map = [
+                    {"min_diff": 500.0, "max_diff": None, "topk": 3},
+                    {"min_diff": 200.0, "max_diff": 500.0, "topk": 3},
+                    {"min_diff": -200.0, "max_diff": 200.0, "topk": 4},
+                    {"min_diff": -500.0, "max_diff": -200.0, "topk": 5},
+                    {"min_diff": None, "max_diff": -500.0, "topk": 6},
+                ]
+
+            c3, c4 = st.columns(2)
+            with c3:
+                use_take_profit = st.checkbox("启用翻倍止盈", value=False, key=f"{prefix}_use_take_profit")
+                take_profit_multiple = float(
+                    st.number_input(
+                        "止盈倍数",
+                        min_value=1.0,
+                        max_value=100.0,
+                        value=2.0,
+                        step=0.1,
+                        key=f"{prefix}_take_profit_multiple",
+                        disabled=not use_take_profit,
+                    )
+                ) if use_take_profit else None
+            with c4:
+                use_stop_loss = st.checkbox("启用个股止损", value=False, key=f"{prefix}_use_stop_loss")
+                stop_loss_pct = float(
+                    st.number_input(
+                        "止损比例",
+                        min_value=0.0,
+                        max_value=0.99,
+                        value=0.07,
+                        step=0.01,
+                        format="%.2f",
+                        key=f"{prefix}_stop_loss_pct",
+                        disabled=not use_stop_loss,
+                    )
+                ) if use_stop_loss else None
+
+            c5, c6 = st.columns(2)
+            with c5:
+                hold_limit_up_positions = st.checkbox(
+                    "昨日近似涨停不卖",
+                    value=False,
+                    key=f"{prefix}_hold_limit_up_positions",
+                    help="若持仓在信号日相对前收盘涨幅达到涨停阈值，则下一交易日调仓时保留，不主动卖出。",
+                )
+            with c6:
+                exclude_suspended_candidates = st.checkbox(
+                    "剔除停牌/不可买候选",
+                    value=False,
+                    key=f"{prefix}_exclude_suspended_candidates",
+                    help="若下一交易日无法成交，则该股票不进入目标买入候选，避免占用买入名额。",
+                )
+
+    params = {
+        "topk": topk,
+        "n_drop": n_drop,
+        "initial_capital": initial_capital,
+        "open_cost": open_cost,
+        "close_cost": close_cost,
+        "min_cost": min_cost,
+        "deal_price": deal_price,
+        "limit_threshold": limit_threshold,
+        "impact_cost": impact_cost,
+        "trade_unit": trade_unit,
+        "volume_limit_ratio": volume_limit_ratio,
+        "forbid_all_trade_at_limit": forbid_all_trade_at_limit,
+        "dynamic_topk_enabled": dynamic_topk_enabled,
+        "dynamic_topk_index_code": dynamic_topk_index_code,
+        "dynamic_topk_ma_window": dynamic_topk_ma_window,
+        "dynamic_topk_map": dynamic_topk_map,
+        "take_profit_multiple": take_profit_multiple,
+        "stop_loss_pct": stop_loss_pct,
+        "hold_limit_up_positions": hold_limit_up_positions,
+        "exclude_suspended_candidates": exclude_suspended_candidates,
+    }
+    return selected_spec["type"], selected_spec["name"], params, top_signal_count
+
+
+def _render_backtest_result_section(result: dict[str, Any], meta: dict[str, Any], *, state_key: str) -> None:
+    st.subheader("回测结果")
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("策略", meta.get("strategy_name", result.get("strategy_type", "-")))
+    m2.metric("交易方法", meta.get("trading_method_name", result.get("trading_method_type", "-")))
+    m3.metric("有效股票数", str(meta.get("symbol_count", "-")))
+    m4.metric("区间", f"{meta.get('start', '')} ~ {meta.get('end', '')}")
+    benchmark_label = meta.get("benchmark_label")
+    if benchmark_label:
+        st.caption(f"基准: {benchmark_label}")
+    failures = meta.get("failures", {})
+    if failures:
+        with st.expander("行情加载失败 / 基准提示", expanded=False):
+            st.json(failures)
+    _render_standalone_backtest({**result, "result_state_key": state_key})
+    st.subheader("明日推荐股票")
+    signal_date = result.get("tomorrow_signal_date")
+    trade_date = result.get("tomorrow_trade_date")
+    if signal_date is not None and trade_date is not None:
+        st.caption(
+            f"基于信号日 {pd.Timestamp(signal_date).date()} 的横截面分数排序，"
+            f"对应下一交易日 {pd.Timestamp(trade_date).date()} 的推荐股票。"
+        )
+    elif signal_date is not None:
+        st.caption(f"基于最新可用信号日 {pd.Timestamp(signal_date).date()} 的横截面分数排序。")
+    tomorrow_candidates = result.get("tomorrow_candidates", pd.DataFrame())
+    if tomorrow_candidates is None or tomorrow_candidates.empty:
+        st.info("暂无可用的明日推荐股票。")
+    else:
+        st.dataframe(tomorrow_candidates, use_container_width=True, hide_index=True)
 
 
 def _render_factor_section(result) -> None:
@@ -2833,6 +4034,19 @@ def _load_cn_histories_for_backtest(
     if not symbols:
         return data_by_symbol, failures
 
+    if cache_only:
+        missing_symbols = load_symbols_missing_bars(symbols, start=start, end=end)
+        covered_symbols = [symbol for symbol in symbols if symbol not in set(missing_symbols)]
+        for symbol in covered_symbols:
+            frame = load_daily_bars(symbol, start, end)
+            if frame.empty:
+                failures[symbol] = "主库空行情"
+            else:
+                data_by_symbol[symbol] = _with_usalpha_fields(frame)
+        if not missing_symbols:
+            return data_by_symbol, failures
+        symbols = missing_symbols
+
     total = len(symbols)
     done = 0
     workers = max(1, int(max_workers))
@@ -2873,7 +4087,7 @@ def _load_cn_histories_for_backtest(
 
 def _render_cn_backtest_page() -> None:
     st.title("中国股市回测")
-    st.write("当前框架先接入策略一和交易模式一；后续策略和交易模式可直接挂到对应 registry。")
+    st.write("使用预定义策略生成横截面信号，再由交易方法执行调仓回测。当前已接入技术综合分和单因子表达式排序。")
 
     today = _today_date()
     default_start = (pd.Timestamp(today) - pd.DateOffset(years=1)).date()
@@ -2883,30 +4097,36 @@ def _render_cn_backtest_page() -> None:
 
     s1, s2, s3, s4 = st.columns(4)
     s1.metric("A股代码表", str(len(all_a)) if not all_a.empty else "-")
-    s2.metric("已缓存股票", str(cache_status["file_count"]))
-    s3.metric("缓存占用", _format_bytes(cache_status["total_size"]))
-    estimated_full_size = cache_status["avg_size"] * (len(all_a) if not all_a.empty else 5300)
+    covered_symbols = max(int(cache_status["file_count"]), int(cache_status["db_symbols"]))
+    covered_size = max(int(cache_status["total_size"]), int(cache_status["db_size_bytes"]))
+    s2.metric("已覆盖股票", str(covered_symbols))
+    s3.metric("主库存储", _format_bytes(cache_status["db_size_bytes"]) if cache_status["db_size_bytes"] > 0 else _format_bytes(cache_status["total_size"]))
+    estimated_full_size = 0.0
+    if covered_symbols > 0 and len(all_a) > 0:
+        estimated_full_size = covered_size / covered_symbols * len(all_a)
     s4.metric("全市场估算", _format_bytes(estimated_full_size) if estimated_full_size > 0 else "-")
     st.caption(
-        f"缓存目录：{cache_status['cache_dir']}。当前只落盘 open/high/low/close/volume 五个必要字段，"
-        "amount/vwap/ret 在读取时计算；目标是把全市场日线缓存控制在 10G 以内。"
+        f"主库：{cache_status['db_path']}；旧缓存目录：{cache_status['cache_dir']}。当前只存 open/high/low/close/volume 和总市值两类回测必要原始字段，"
+        "amount/vwap/ret 在读取时计算；目标是把全A股数据库控制在约 1GB。"
     )
+    db1, db2, db3 = st.columns(3)
+    db1.metric("主库日线行数", f"{int(cache_status['db_bars']):,}")
+    db2.metric("主库总市值覆盖", f"{int(cache_status['db_valuation_symbols']):,}")
+    db3.metric("主库总市值行数", f"{int(cache_status['db_valuation_rows']):,}")
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2 = st.columns(2)
     with c1:
-        initial_cash = float(st.number_input("初始资金", min_value=10000.0, value=1_000_000.0, step=10000.0))
-    with c2:
         start_date = st.date_input("起始日期", value=default_start, key="cn_bt_start")
-    with c3:
+    with c2:
         end_date = st.date_input("结束日期", value=today, key="cn_bt_end")
 
-    c4, c5, c6 = st.columns(3)
-    with c4:
-        strategy_name = st.selectbox("策略", options=list(STRATEGY_REGISTRY.keys()), index=0)
-    with c5:
-        trade_mode_name = st.selectbox("交易模式", options=list(TRADE_MODE_REGISTRY.keys()), index=0)
-    with c6:
-        top_n = int(st.number_input("买入股票数量", min_value=1, max_value=50, value=10, step=1))
+    benchmark_code, benchmark_label = _select_cn_backtest_benchmark("cn_bt")
+
+    strategy_type, strategy_name, strategy_params = _select_strategy_for_backtest("cn_bt")
+    trading_method_type, trading_method_name, trading_method_params, top_signal_count = _select_trading_method_for_backtest(
+        "cn_bt",
+        market="CN",
+    )
 
     d1, d2, d3 = st.columns(3)
     with d1:
@@ -2955,25 +4175,15 @@ def _render_cn_backtest_page() -> None:
             )
         )
 
-    if universe_mode == "全A股":
-        cache_only_run = st.checkbox(
-            "运行回测时仅读取本地缓存",
-            value=True,
-            help="默认开启，避免在全A股回测时同步联网更新 5000+ 股票导致超时。先点“仅建立/更新行情缓存”，再运行回测。",
-        )
-    else:
-        cache_only_run = st.checkbox(
-            "运行回测时仅读取本地缓存",
-            value=False,
-            help="开启后不会联网补数据，只使用本地缓存中已有行情。",
-        )
+    cache_only_run = True
+    st.caption("进入页面默认只读取主库和本地已有缓存；需要补新数据时，点击下方“一键新增/更新数据”。")
 
     pool_raw = st.text_area(
         "股票池（逗号或换行分隔）",
         value=default_pool,
         height=90,
         disabled=universe_mode == "全A股",
-        help="策略一会对股票池内股票逐日计算技术指标综合分，并选取得分最高的股票。",
+        help="支持手动股票池或全A股。策略会先对股票池逐日打分，再交给交易方法做持仓筛选和调仓。",
     )
     if universe_mode == "全A股":
         if all_a.empty:
@@ -2996,42 +4206,70 @@ def _render_cn_backtest_page() -> None:
         return
 
     st.caption(
-        "策略一：股票查看中的 MACD、KDJ、RSI、DMI、威廉指标、均线评分取平均。"
-        "交易模式一：每日开盘按上一交易日信号调仓，收盘按当日信号再调仓；全仓等权买入前十，最小成交单位 100 股。"
+        "执行语义: T 日信号, T+1 日按所选成交价字段成交。A股默认启用 100 股成交单位和近似涨跌停约束。"
     )
 
     warmup_start = (pd.Timestamp(start_date) - pd.DateOffset(years=1)).date().isoformat()
     start_str = pd.Timestamp(start_date).date().isoformat()
     effective_end_ts = _effective_cn_daily_end(end_date)
     end_str = effective_end_ts.date().isoformat()
+    incremental_refresh_start = _cn_incremental_update_start(end_date, lookback_bdays=10)
     if effective_end_ts.date() != pd.Timestamp(end_date).date():
         st.caption(f"A股日线当前按最近已完成交易日加载：{end_str}。")
-    b1, b2 = st.columns(2)
-    with b1:
-        build_cache_clicked = st.button("仅建立/更新行情缓存", use_container_width=True)
-    with b2:
-        run_clicked = st.button("运行回测", type="primary", use_container_width=True)
+    action1, action2 = st.columns([1, 1])
+    with action1:
+        update_data_clicked = st.button("一键新增/更新数据", use_container_width=True, type="primary")
+    with action2:
+        rebuild_db_clicked = st.button("从本地缓存重建主库", use_container_width=True)
 
-    if build_cache_clicked:
-        with st.spinner("正在建立/更新A股行情缓存..."):
-            progress_slot = st.progress(0.0, text="加载行情 0/0")
-            data_by_symbol, failures = _load_cn_histories_for_backtest(
-                tickers,
-                start=warmup_start,
-                end=end_str,
-                max_workers=max_workers,
-                cache_only=False,
+    if rebuild_db_clicked:
+        with st.spinner("正在把本地已有 parquet 写入主库..."):
+            progress_slot = st.progress(0.0, text="写入主库 0/0")
+            rebuild_result = _rebuild_cn_market_db_from_local(
+                symbols=tickers,
+                include_bars=True,
+                include_valuation=True,
                 progress_slot=progress_slot,
             )
             progress_slot.empty()
         status = _cn_cache_status()
         st.success(
-            f"缓存更新完成：成功 {len(data_by_symbol)}，失败 {len(failures)}，"
-            f"当前缓存 {status['file_count']} 只，占用 {_format_bytes(status['total_size'])}。"
+            f"主库重建完成：股票 {rebuild_result['symbols']} 只，"
+            f"写入日线 {rebuild_result['bar_symbols']} 只，写入总市值 {rebuild_result['valuation_symbols']} 只；"
+            f"当前主库占用 {_format_bytes(status['db_size_bytes'])}。"
         )
-        if failures:
-            with st.expander("缓存更新失败股票", expanded=False):
-                st.json(failures)
+        if rebuild_result["failures"]:
+            with st.expander("主库重建失败项", expanded=False):
+                st.json(rebuild_result["failures"])
+
+    if update_data_clicked:
+        with st.spinner("正在新增/更新数据（日线尾部 + 总市值）..."):
+            progress_slot = st.progress(0.0, text="步骤 1/2：更新日线尾部")
+            update_result = _refresh_cn_market_data_all_in_one(
+                symbols=tickers,
+                end=end_str,
+                max_workers=max_workers,
+                progress_slot=progress_slot,
+            )
+            progress_slot.empty()
+        status = _cn_cache_status()
+        mode_label = "全市场快照优先" if update_result.get("mode") == "full_market_fast" else "逐股增量"
+        st.success(
+            f"数据更新完成（{mode_label}）：股票 {update_result['symbols']} 只，"
+            f"快照更新 {update_result['spot_updated']} 只，日线尾部剩余缺口 {update_result['bars_gap']} 只，"
+            f"逐股日线更新成功 {update_result['bars_updated']} 只，总市值更新目标 {update_result['valuation_target']} 只，"
+            f"总市值更新成功 {update_result['valuation_updated']} 只；"
+            f"当前主库 {status['db_symbols']} 只股票，{status['db_bars']:,} 行，总市值覆盖 {status['db_valuation_symbols']} 只。"
+        )
+        if update_result["failures"]:
+            with st.expander("数据更新失败项", expanded=False):
+                st.json(update_result["failures"])
+
+    b1, b2 = st.columns(2)
+    with b1:
+        st.caption("回测默认直接读本地主库/缓存。")
+    with b2:
+        run_clicked = st.button("运行回测", type="primary", use_container_width=True)
 
     if run_clicked:
 
@@ -3051,24 +4289,25 @@ def _render_cn_backtest_page() -> None:
                 return
             if cache_only_run and len(data_by_symbol) < len(tickers):
                 st.warning(
-                    f"当前为只读缓存模式：目标股票 {len(tickers)} 只，缓存命中 {len(data_by_symbol)} 只，"
-                    f"缺失 {len(failures)} 只。若要补齐，请先点击“仅建立/更新行情缓存”。"
+                    f"当前为只读主库/本地模式：目标股票 {len(tickers)} 只，已命中 {len(data_by_symbol)} 只，"
+                    f"缺失 {len(failures)} 只。若要补齐，请先点击“一键新增/更新数据”。"
                 )
             try:
-                benchmark = _fetch_cn_index_history_cached("000001", start_str, end_str)
+                benchmark = _fetch_cn_index_history_cached(benchmark_code, start_str, end_str)
             except Exception as exc:  # pylint: disable=broad-except
                 benchmark = pd.DataFrame()
-                failures["沪指000001"] = str(exc)
+                failures[benchmark_label] = str(exc)
             try:
-                backtest_fn = TRADE_MODE_REGISTRY[trade_mode_name]
-                result = backtest_fn(
+                result = run_strategy_backtest(
                     data_by_symbol=data_by_symbol,
                     benchmark=benchmark,
-                    initial_cash=initial_cash,
+                    strategy_type=strategy_type,
+                    strategy_params=strategy_params,
+                    trading_method_type=trading_method_type,
+                    trading_method_params=trading_method_params,
                     start=start_str,
                     end=end_str,
-                    strategy_fn=STRATEGY_REGISTRY[strategy_name],
-                    top_n=top_n,
+                    top_signal_count=top_signal_count,
                 )
             except Exception as exc:  # pylint: disable=broad-except
                 st.error(f"回测失败：{exc}")
@@ -3077,15 +4316,19 @@ def _render_cn_backtest_page() -> None:
 
         st.session_state["cn_backtest_result"] = result
         st.session_state["cn_backtest_meta"] = {
-            "strategy": strategy_name,
-            "trade_mode": trade_mode_name,
-            "symbols": list(data_by_symbol.keys()),
+            "strategy_name": strategy_name,
+            "strategy_type": strategy_type,
+            "trading_method_name": trading_method_name,
+            "trading_method_type": trading_method_type,
+            "symbol_count": len(data_by_symbol),
             "failures": failures,
             "cache_only_run": bool(cache_only_run),
             "start": start_str,
             "end": end_str,
             "cache_status": _cn_cache_status(),
+            "benchmark_label": benchmark_label,
         }
+        st.session_state["cn_backtest_last_tickers"] = list(data_by_symbol.keys())
 
     result = st.session_state.get("cn_backtest_result")
     meta = st.session_state.get("cn_backtest_meta", {})
@@ -3093,22 +4336,122 @@ def _render_cn_backtest_page() -> None:
         st.info("请先运行回测。")
         return
 
-    st.subheader("回测结果")
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("策略", meta.get("strategy", strategy_name))
-    m2.metric("交易模式", meta.get("trade_mode", trade_mode_name))
-    m3.metric("有效股票数", str(len(meta.get("symbols", []))))
-    m4.metric("区间", f"{meta.get('start', '')} ~ {meta.get('end', '')}")
-    failures = meta.get("failures", {})
-    if failures:
-        with st.expander("行情加载失败/基线提示", expanded=False):
-            st.json(failures)
-    _render_standalone_backtest(result)
+    _render_backtest_result_section(result, meta, state_key="cn_backtest")
 
 
 def _render_us_backtest_page() -> None:
     st.title("美国股市回测")
-    st.info("回测框架已先接入中国股市版本；美股版本会复用同一策略/交易模式接口，后续可直接接入 yfinance 数据源。")
+    st.write("直接对预定义股票池做策略回测。美股数据使用 yfinance，交易方法与A股回测页共用。")
+
+    today = _today_date()
+    default_start = (pd.Timestamp(today) - pd.DateOffset(years=1)).date()
+    default_pool = "AAPL,MSFT,NVDA,AMZN,GOOGL,META,TSLA,AVGO,AMD,NFLX"
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        start_date = st.date_input("起始日期", value=default_start, key="us_bt_start")
+    with c2:
+        end_date = st.date_input("结束日期", value=today, key="us_bt_end")
+    with c3:
+        benchmark = st.text_input("基准代码", value="SPY", key="us_bt_benchmark").strip().upper() or "SPY"
+
+    strategy_type, strategy_name, strategy_params = _select_strategy_for_backtest("us_bt")
+    trading_method_type, trading_method_name, trading_method_params, top_signal_count = _select_trading_method_for_backtest(
+        "us_bt",
+        market="US",
+    )
+
+    d1, d2 = st.columns(2)
+    with d1:
+        max_tickers = int(
+            st.number_input(
+                "股票数上限",
+                min_value=1,
+                max_value=2000,
+                value=50,
+                step=1,
+                help="会先去重并过滤非法代码，再按该上限截断。",
+                key="us_bt_max_tickers",
+            )
+        )
+    with d2:
+        interval = st.selectbox("K线频率", options=["1d"], index=0, key="us_bt_interval")
+
+    pool_raw = st.text_area(
+        "股票池（逗号或换行分隔）",
+        value=default_pool,
+        height=90,
+        key="us_bt_pool",
+        help="支持任意 Yahoo Finance 可识别代码。因子表达式策略会对每只股票单独计算时间序列信号，再做横截面排序。",
+    )
+
+    tickers = resolve_tickers_limited(
+        [token.strip() for token in str(pool_raw).replace("\n", ",").replace("，", ",").split(",") if token.strip()],
+        max_tickers=max_tickers,
+    )
+    if not tickers:
+        st.info("请输入至少一只美股股票。")
+        return
+    if pd.Timestamp(start_date) > pd.Timestamp(end_date):
+        st.error("起始日期不能晚于结束日期。")
+        return
+
+    st.caption("执行语义: T 日信号, T+1 日按所选成交价字段成交。美股默认不启用 lot 限制, 涨跌停阈值默认放宽。")
+
+    start_str = pd.Timestamp(start_date).date().isoformat()
+    end_str = pd.Timestamp(end_date).date().isoformat()
+
+    if st.button("运行回测", type="primary", use_container_width=True, key="us_bt_run"):
+        with st.spinner("正在加载美股行情并执行回测..."):
+            failures: dict[str, str] = {}
+            try:
+                bundle = fetch_us_market_data(
+                    tickers,
+                    benchmark=benchmark,
+                    start=start_str,
+                    end=end_str,
+                    interval=interval,
+                    auto_adjust=False,
+                    max_tickers=max_tickers,
+                )
+                data_by_symbol = build_data_by_symbol_from_bundle(bundle)
+                result = run_strategy_backtest(
+                    data_by_symbol=data_by_symbol,
+                    benchmark=bundle.benchmark,
+                    strategy_type=strategy_type,
+                    strategy_params=strategy_params,
+                    trading_method_type=trading_method_type,
+                    trading_method_params=trading_method_params,
+                    start=start_str,
+                    end=end_str,
+                    top_signal_count=top_signal_count,
+                )
+            except Exception as exc:  # pylint: disable=broad-except
+                st.error(f"回测失败：{exc}")
+                st.exception(exc)
+                return
+
+        st.session_state["us_backtest_result"] = result
+        st.session_state["us_backtest_meta"] = {
+            "strategy_name": strategy_name,
+            "strategy_type": strategy_type,
+            "trading_method_name": trading_method_name,
+            "trading_method_type": trading_method_type,
+            "symbol_count": len(data_by_symbol),
+            "failures": failures,
+            "start": start_str,
+            "end": end_str,
+            "benchmark_label": benchmark,
+        }
+        st.session_state["us_backtest_last_tickers"] = list(data_by_symbol.keys())
+
+    result = st.session_state.get("us_backtest_result")
+    meta = st.session_state.get("us_backtest_meta", {})
+    if result is None:
+        st.info("请先运行回测。")
+        return
+
+    _render_backtest_result_section(result, meta, state_key="us_backtest")
 
 
 def main() -> None:
